@@ -6,20 +6,14 @@
         },
         "SimpleXMLElement":{
             "application/xml":"PhpPlatform\\RESTFul\\Serialization\\XmlToSimpleXMLElementSerialization"
-        },
-        "PhpPlatform\\RESTFul\\Model":{
-            "application/json":"PhpPlatform\\RESTFul\\Serialization\\JsonToModelSerialization",
-            "application/xml":"PhpPlatform\\RESTFul\\Serialization\\XmlToModelSerialization"
         }
     },
     "deserializers":{
         "application/json":{
-            "array":"PhpPlatform\\RESTFul\\Serialization\\JsonToArraySerialization",
-            "PhpPlatform\\RESTFul\\Model":"PhpPlatform\\RESTFul\\Serialization\\JsonToModelSerialization"
+            "array":"PhpPlatform\\RESTFul\\Serialization\\JsonToArraySerialization"
         },
         "application/xml":{
-            "SimpleXMLElement":"PhpPlatform\\RESTFul\\Serialization\\XmlToSimpleXMLElementSerialization",
-            "PhpPlatform\\RESTFul\\Model":"PhpPlatform\\RESTFul\\Serialization\\XmlToModelSerialization"
+            "SimpleXMLElement":"PhpPlatform\\RESTFul\\Serialization\\XmlToSimpleXMLElementSerialization"
         }
     },
     "routes":{
