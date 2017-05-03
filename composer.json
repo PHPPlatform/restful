@@ -1,0 +1,38 @@
+{
+	"name" : "php-platform/restful",
+	"type" : "library",
+	"keywords" : [
+		"restful",
+		"php restful",
+		"REST APIs",
+		"Web Services",
+		"REST Services"
+	],
+	"homepage" : "https://github.com/PHPPlatform/restful",
+	"authors" : [{
+			"name" : "Raghavendra K R",
+			"email" : "krraghavendra@yahoo.co.in",
+			"homepage" : "http://krraghavendra.in",
+			"role" : "Software Developer"
+		}
+	],
+	"require" : {
+		"php" : ">=5.3",
+		"php-platform/config" : "~0.1",
+		"php-platform/session" : "~0.1"
+	},
+	"require-dev" : {
+		"phpunit/phpunit" : "~4.8"
+	},
+	"autoload" : {
+		"psr-4" : {
+			"PhpPlatform\\" : "src/"
+		}
+	},
+	"autoload-dev" : {
+		"psr-4" : {
+			"PhpPlatform\\Tests\\" : "tests/"
+		}
+	},
+	"minimum-stability" : "dev"
+}

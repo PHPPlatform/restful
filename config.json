@@ -1,0 +1,28 @@
+{
+    "webroot":"",
+    "serializers":{
+        "array":{
+            "application/json":"PhpPlatform\\RESTFul\\Serialization\\JsonToArraySerialization"
+        },
+        "SimpleXMLElement":{
+            "application/xml":"PhpPlatform\\RESTFul\\Serialization\\XmlToSimpleXMLElementSerialization"
+        },
+        "PhpPlatform\\RESTFul\\Model":{
+            "application/json":"PhpPlatform\\RESTFul\\Serialization\\JsonToModelSerialization",
+            "application/xml":"PhpPlatform\\RESTFul\\Serialization\\XmlToModelSerialization"
+        }
+    },
+    "deserializers":{
+        "application/json":{
+            "array":"PhpPlatform\\RESTFul\\Serialization\\JsonToArraySerialization",
+            "PhpPlatform\\RESTFul\\Model":"PhpPlatform\\RESTFul\\Serialization\\JsonToModelSerialization"
+        },
+        "application/xml":{
+            "SimpleXMLElement":"PhpPlatform\\RESTFul\\Serialization\\XmlToSimpleXMLElementSerialization",
+            "PhpPlatform\\RESTFul\\Model":"PhpPlatform\\RESTFul\\Serialization\\XmlToModelSerialization"
+        }
+    },
+    "routes":{
+
+    }
+}
