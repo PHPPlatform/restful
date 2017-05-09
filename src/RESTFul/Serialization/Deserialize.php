@@ -10,5 +10,5 @@ interface Deserialize {
 	 *
 	 * @return mixed PHP Represenation of the passed in $data
 	 */
-	function deserialize($data);
+	static function deserialize($data);
 }

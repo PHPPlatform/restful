@@ -11,29 +11,60 @@ class Route {
 	
 	const THIS_PACKAGE_NAME = 'php-platform/restful';
 	
-	static function run($url = null){
+	static function run($uri = null){
+		
+		$route = self::findRoute($uri);
+		
+		$class = $route["class"];
+		$method = $route["method"];
+		$pathParams = $route['pathParams'];
+		
+		$intRESTFulName = 'PhpPlatform\RESTFul\RESTService';
+		
+		if(!in_array($intRESTFulName,class_implements($class,true))){
+			throw new InternalServerError("$class does not implement $intRESTFulName");
+		}
+		
+		// initialize HTTPRequest 
+		$httpRequest = HTTPRequest::getInstance();
+		
+		$routeClassReflection = new \ReflectionClass($class);
+		$routeMethodReflection = $routeClassReflection->getMethod($method);
+		$routeMethodReflection->setAccessible(true);
+		$routeInstance = $routeClassReflection->newInstance();
+		
+		$httpResponse = $routeMethodReflection->invokeArgs($routeInstance, array_merge(array($httpRequest),$pathParams));
+		
+		$httpResponse->flush();
+		
+	}
+	
+	private static function findRoute($uri){
 		$method = $_SERVER['REQUEST_METHOD'];
-		if(!isset($url)){
-			$url = $_SERVER['REQUEST_URI'];
+		if(!isset($uri)){
+			$uri = $_SERVER['REQUEST_URI'];
 		}
 		
-		$webroot = Settings::getSettings(self::THIS_PACKAGE_NAME,"webroot");
+		$appPath = Settings::getSettings(self::THIS_PACKAGE_NAME,"appPath");
 		
-		if(strpos($webroot,"/") !== 0){ // prepend / if needed
-			$webroot = "/".$webroot;
+		if(strpos($appPath,"/") !== 0){ // prepend / if needed
+			$appPath = "/".$appPath;
 		}
 		
-		if(strpos($url,"/") !== 0){ // prepend / if needed
-			$url = "/".$url;
+		if(strpos($uri,"/") !== 0){ // prepend / if needed
+			$uri = "/".$uri;
 		}
 		
-		if(strpos($url,$webroot) !== 0){
+		if(strpos($uri,$appPath) !== 0){
 			throw new NotFound();
-		}else{ // real url is after webroot
-			$url = substr($url,strlen($webroot));
+		}else{ // real uri is after webroot
+			$uri = substr($uri,strlen($appPath));
 		}
 		
-		$urlPaths = array_diff(explode("/",$url),array(""));
+		$_SERVER['REQUEST_URI'] = $uri;
+		$_SERVER['PLATFORM_APPLICATION_PATH'] = $appPath;
+		
+		$urlPaths = array_diff(explode("/",$uri),array(""));
 		
 		$route = Settings::getSettings(self::THIS_PACKAGE_NAME,"routes");
 		
@@ -42,7 +73,7 @@ class Route {
 			if(!isset($route["children"])){
 				$route["children"] = array();
 			}
-		
+			
 			if(array_key_exists(urlencode($urlPath),$route["children"])){
 				$route = $route["children"][urlencode($urlPath)];
 			}else if(array_key_exists("*",$route["children"])){
@@ -65,23 +96,16 @@ class Route {
 		
 		$route = $route[$method];
 		
-		$class = $route["class"];
-		$method = $route["method"];
-		
-		$intRESTFulName = 'icircle\restful\RESTFul';
-		
-		if(!in_array($intRESTFulName,class_implements($class,true))){
-			throw new InternalServerError("$class does not implement $intRESTFulName");
+		// check for existenace of the class and method
+		if(!(array_key_exists("class", $route) && 
+			array_key_exists("method", $route) && 
+			method_exists($route["class"], $route["method"]))){
+				throw new InternalServerError("Resource at " . implode("/", $urlPaths) . " Not Found");
 		}
+		$route["pathParams"] = $pathParams;
 		
-		try{
-			$reflectionMethod = new \ReflectionMethod($class,$method);
-			$reflectionClass  = new \ReflectionClass($class);
-		}catch (\ReflectionException $re){
-			throw new InternalServerError("Resource at " . implode("/", $urlPaths) . " Not Found");
-		}
-		
-		$classObj = $reflectionClass->newInstance();
-		
+		return $route;
 	}
+	
+	
 }

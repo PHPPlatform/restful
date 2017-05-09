@@ -10,5 +10,5 @@ interface Serialize {
 	 * 
 	 * @return string String representaion of the data
 	 */
-	function serialize($data);
+	static function serialize($data);
 }

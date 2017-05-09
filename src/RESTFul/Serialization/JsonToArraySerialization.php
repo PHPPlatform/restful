@@ -13,7 +13,7 @@ class JsonToArraySerialization implements Serialize, Deserialize {
 	 *
 	 * @return string JSON String representaion of the data
 	 */
-	public function serialize(array $data) {
+	public static function serialize(array $data) {
 		return json_encode($data);
 	}
 	
@@ -23,7 +23,7 @@ class JsonToArraySerialization implements Serialize, Deserialize {
 	 *
 	 * @return array PHP array Represenation of the passed in $data
 	 */
-	public function deserialize($data) {
+	public static function deserialize($data) {
 		return json_decode($data,true);
 	}
 }

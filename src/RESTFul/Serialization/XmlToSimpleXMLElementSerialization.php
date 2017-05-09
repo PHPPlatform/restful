@@ -4,17 +4,16 @@ namespace PhpPlatform\RESTFul\Serialization;
 
 use PhpPlatform\RESTFul\Serialization\Deserialize;
 use PhpPlatform\RESTFul\Serialization\Serialize;
-use PhpPlatform\RESTFul\Model;
 
-class XmlToModelSerialization implements Serialize, Deserialize {
+class XmlToSimpleXMLElementSerialization implements Serialize, Deserialize {
 	
 	/**
 	 * serializes the $data 
-	 * @param Model $data
+	 * @param \SimpleXMLElement $data
 	 * 
 	 * @return string XML String representaion of the data
 	 */
-	public function serialize(Model $data) {
+	public static function serialize(\SimpleXMLElement $data) {
 		return $data->asXML();
 	}
 	
@@ -22,9 +21,9 @@ class XmlToModelSerialization implements Serialize, Deserialize {
 	 * deserializes the $data
 	 * @param string $data
 	 *
-	 * @return Model object for the passed in xml $data
+	 * @return \SimpleXMLElement object for the passed in xml $data
 	 */
-	public function deserialize($data) {
+	public static function deserialize($data) {
 		return new \SimpleXMLElement($data);
 	}
 }

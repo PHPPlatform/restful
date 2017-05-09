@@ -2,66 +2,57 @@
 
 namespace PhpPlatform\RESTFul;
 
-use PhpPlatform\Errors\Exceptions\Http\_4XX\BadRequest;
+use PhpPlatform\Config\Settings;
+use PhpPlatform\Errors\Exceptions\Http\_4XX\NotAcceptable;
 use PhpPlatform\Errors\Exceptions\Http\_5XX\InternalServerError;
 
 class HTTPRequest {
-	private $url = null;
+	private $method = null;
+	private $protocol = null;
+	private $host = null;
+	private $appPath = null;
+	private $uri = null;
 	private $queryParams = null;
 	private $headers = null;
-	private $object = null;
-	private $files = null;
+	private $data = null;
 	
 	private static $instance = null;
 	
 	private function __construct(){
-		$this->url = $_SERVER['REQUEST_URI'];
+		$this->method = $_SERVER['REQUEST_METHOD'];
+		
+		$this->protocol = isset($_SERVER['HTTPS'])?"https":"http";
+		
+		$this->host = $_SERVER['HTTP_HOST'];
+		
+		$this->appPath = $_SERVER['PLATFORM_APPLICATION_PATH'];
+		
+		$this->uri = $_SERVER['REQUEST_URI'];
+		
 		$this->queryParams = $_GET;
 		$_GET = array();
 		$this->headers = self::getHeaders();
 		
+		// deserialize the content
 		$contentType = $this->headers['Content-Type'];
-		if(stripos($contentType, 'multipart/form-data') === 0){
-			// actual content is the files 
-			// validate files for error
-			foreach ($_FILES as $name =>$_FILE){
-				switch ($_FILE['error']){
-					case UPLOAD_ERR_INI_SIZE : throw new BadRequest("Exceeded File size for $name");
-					case UPLOAD_ERR_FORM_SIZE : throw new BadRequest("Exceeded File size for $name");
-					case UPLOAD_ERR_PARTIAL : throw new BadRequest("$name File Uploaded Partially");
-					case UPLOAD_ERR_NO_FILE : throw new BadRequest("No File Uploaded for $name");
-					        
-					case UPLOAD_ERR_NO_TMP_DIR : throw new InternalServerError("No Temporary Directory to write $name");
-					case UPLOAD_ERR_CANT_WRITE : throw new InternalServerError("Cant write $name to Disk");
-					case UPLOAD_ERR_EXTENSION : throw new InternalServerError("PHP extention caused the error to upload $name");
-				}
-			}
-			$this->files = $_FILES;
-			$_FILES = array();
-			
-			// if data present along with file , populate into object
-			$this->object = $_POST;
-			$_POST = array();
-		}elseif (stripos($contentType, 'application/x-www-form-urlencoded') === 0){
-			$this->object = $_POST;
-			$_POST = array();
-		}elseif (stripos($contentType, 'application/json') === 0){
-			$jsonString = file_get_contents('php://input');
-			$this->object = json_decode($jsonString,true);
-			if($this->object === null){
-				throw new BadRequest('Invalid JSON Content');
-			}
-		}elseif (stripos($contentType, 'application/xml') === 0){
-			$xmlString = file_get_contents('php://input');
-			try{
-				$this->object = new \SimpleXMLElement($xmlString);
-			}catch (\Exception $e){
-				throw new BadRequest('Invalid XML Content');
-			}
-		}else{
-			// else save raw 
-			$this->object = file_get_contents('php://input');
+		$internalContentType = $_SERVER['PLATFORM_INTERNAL_CONTENT_TYPE'];
+		
+		$deserializer = Settings::getSettings(Route::THIS_PACKAGE_NAME,"deserializers.$contentType.$internalContentType");
+		
+		if(!class_exists($deserializer, true)){
+			throw new NotAcceptable("$contentType Not Acceptable");
 		}
+		
+		$deserializerReflectionClass = new \ReflectionClass($deserializer);
+		$deserializerInterface = 'PhpPlatform\RESTFul\Serialization\Deserialize';
+		if(!in_array($deserializerInterface, $deserializerReflectionClass->getInterfaceNames())){
+			throw new InternalServerError("$deserializer does not implement $deserializerInterface");
+		}
+		
+		$reflectionMethod = $deserializerReflectionClass->getMethod('deserialize');
+		
+		$this->data = $reflectionMethod->invoke(null,file_get_contents('php://input'));
+		
 	}
 	
 	/**
@@ -77,11 +68,43 @@ class HTTPRequest {
 	}
 	
 	/**
-	 * Returns the url of this request
+	 * Returns HTTP method 
 	 * @return string
 	 */
-	function getUrl(){
-		return $this->url;
+	function getMethod() {
+		return $this->method;
+	}
+	
+	/**
+	 * Returns Protocol of this request
+	 * @return string either http ot https
+	 */
+	function getProtocol() {
+		return $this->protocol;
+	}
+	
+	/**
+	 * Returns Host
+	 * @return string 
+	 */
+	function getHost() {
+		return $this->host;
+	}
+	
+	/**
+	 * Returns Application path
+	 * @return string
+	 */
+	function getAppPath() {
+		return $this->appPath;
+	}
+	
+	/**
+	 * Returns the uri of this request
+	 * @return string
+	 */
+	function getUri(){
+		return $this->uri;
 	}
 	
 	/**
@@ -103,63 +126,12 @@ class HTTPRequest {
 	}
 	
 	/**
-	 * Returns Data as string or FALSE on failure
+	 * Returns Data with this request
 	 * 
-	 * @return string
+	 * @return mixed the type of the return object depends on $_SERVER['PLATFORM_INTERNAL_CONTENT_TYPE']
 	 */
-	function getDataAsString(){
-		if(is_string($this->object)){
-			return $this->object;
-		}elseif (is_array($this->object)){
-			return json_encode($this->object);
-		}elseif ($this->object instanceof \SimpleXMLElement){
-			return $this->object->asXML();
-		}else {
-			return FALSE;
-		}
-	}
-	
-	/**
-	 * Returns Data as associative array or FALSE on failure
-	 * 
-	 * @return array|boolean
-	 */
-	function getDataAsArray(){
-		if(is_array($this->object)){
-			return $this->object;
-		}elseif ($this->object instanceof \SimpleXMLElement){
-			
-		}else{
-			return FALSE;
-		}
-	}
-	
-	/**
-	 * Returns Data as SimpleXMLElement object or FALSE on Failure
-	 * @return \SimpleXMLElement|boolean
-	 */
-	function getDataAsXml(){
-		if($this->object instanceof \SimpleXMLElement){
-			return $this->object;
-		}else {
-			return FALSE;
-		}
-	}
-	
-	/**
-	 * @todo add getDataAsMappedEntity , which maps data in $this->object into provided class
-	 */
-	
-	/**
-	 * Returns associative array of uploaded file information with following information
-	 * name , type, size, tmp_name
-	 * 
-	 * @param string $name , Name of the file 
-	 * 
-	 * @return array
-	 */
-	function getFile($name){
-		return $this->files[$name];
+	function getData(){
+		return $this->data;
 	}
 	
 	/**
