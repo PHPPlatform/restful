@@ -18,6 +18,8 @@ if (get_magic_quotes_gpc()) {
 
 require dirname(__FILE__).'/vendor/autoload.php';
 
-\PhpPlatform\RESTFul\Route::run($_REQUEST["__route__"]);
+$requestUri = $_REQUEST["__route__"];
+$_SERVER['REQUEST_URI'] == $requestUri;
+\PhpPlatform\RESTFul\Route::run($requestUri);
 
 ?>

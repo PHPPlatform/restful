@@ -37,7 +37,7 @@ class HTTPRequest {
 		$contentType = $this->headers['Content-Type'];
 		$internalContentType = $_SERVER['PLATFORM_INTERNAL_CONTENT_TYPE'];
 		
-		$deserializer = Settings::getSettings(Route::THIS_PACKAGE_NAME,"deserializers.$contentType.$internalContentType");
+		$deserializer = Settings::getSettings(Package::Name,"deserializers.$contentType.$internalContentType");
 		
 		if(!class_exists($deserializer, true)){
 			throw new NotAcceptable("$contentType Not Acceptable");

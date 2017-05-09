@@ -1,14 +1,13 @@
 <?php
 namespace PhpPlatform\RESTFul;
 
-
 use PhpPlatform\Errors\Exceptions\Application\BadInputException;
 use PhpPlatform\Config\Settings;
 use PhpPlatform\Errors\Exceptions\Http\_5XX\InternalServerError;
+use phpDocumentor\Reflection\DocBlock\Serializer;
 
 class HTTPResponse{
 	
-	const THIS_PACKAGE_NAME = 'php-platform/restful';
 	
 	private $code = 200;
 	private $message = 'OK';
@@ -76,82 +75,110 @@ class HTTPResponse{
 	
 	/**
 	 * this method flushes the HTTPResponse, output and headers are written , 
-	 * tobe called only once and it ends the request
+	 * calling this method will cause exit from php
 	 * 
-	 * called from PhpPlatform\RESTFul\Route using Reflection
+	 * Any code after calling this method won't be executed
 	 * 
+	 * @param $httpAccept Accept Header of this http request
 	 */
-	private function flush(HTTPRequest $httpRequest){
-		// set reponse code and message
-		header($_SERVER['SERVER_PROTOCOL']." ".$this->code." ".$this->message);
-		
-		foreach ($this->headers as $name=>$value){
-			header("$name : $value");
-		}
-		
-		// write data
-		$dataType = gettype($this->data);
-		if($dataType == "unknown type"){
-			self::exitWithError("Unkown type of data in HTTPResponse");
-		}
-		
-		$serializedData = "";
-		
-		if($dataType == "NULL"){
-			// don't do anything
-		}elseif($dataType == "object"){
-			// find the serializer
-			$acceptPreferences = self::getAcceptPreferenceTable($httpRequest->getHeader("Accept"));
+	function flush($httpAccept = null){
+		try{
+			// set reponse code and message
+			header($_SERVER['SERVER_PROTOCOL']." ".$this->code." ".$this->message);
 			
-			$className = get_class($this->data);
-			
-			$classAndInterfaces = self::getParentsAndInterfaces($className);
-			
-			$contentTypeToSerializerMap = array();
-			foreach ($classAndInterfaces as $_className=>$_interfaces){
-				$contentTypes = Settings::getSettings(self::THIS_PACKAGE_NAME,"serializers.$_className");
-				if(is_array($contentTypes)){
-					$contentTypeToSerializerMap = array_merge($contentTypes,$contentTypeToSerializerMap);
-				}
-				foreach ($_interfaces as $_interface){
-					$contentTypes = Settings::getSettings(self::THIS_PACKAGE_NAME,"serializers.$_interface");
-					if(is_array($contentTypes)){
-						$contentTypeToSerializerMap = array_merge($contentTypes,$contentTypeToSerializerMap);
-					}
-				}
+			foreach ($this->headers as $name=>$value){
+				header("$name : $value");
 			}
 			
+			// clear buffer , if any
+			if(ob_get_length() !== false){
+				ob_clean();
+			}
 			
-			$serializer = self::chooseSerializer($contentTypeToSerializerMap, $acceptPreferences);
+			// write data
+			$dataType = gettype($this->data);
+			if($dataType == "unknown type"){
+				$this->exitWithError("Unkown type of data in HTTPResponse");
+			}
 			
-			$serializedData = self::serialize($serializer, $this->data);
-			
-		}else{
-			$acceptPreferences = self::getAcceptPreferenceTable($httpRequest->getHeader("Accept"));
-			$contentTypeToSerializerMap = Settings::getSettings(self::THIS_PACKAGE_NAME,"serializers.$dataType");
-			$serializer = self::chooseSerializer($contentTypeToSerializerMap, $acceptPreferences);
-			$serializedData = self::serialize($serializer, $this->data);
+			if($dataType == "NULL"){
+				// don't do anything
+			}else{
+				if($dataType == "object"){
+					$className = get_class($this->data);
+					
+					$classAndInterfaces = $this->getParentsAndInterfaces($className);
+					
+					$contentTypeToSerializerMap = array();
+					foreach ($classAndInterfaces as $_className=>$_interfaces){
+						$contentTypes = Settings::getSettings(Package::Name,"serializers.$_className");
+						if(is_array($contentTypes)){
+							$contentTypeToSerializerMap = array_merge($contentTypes,$contentTypeToSerializerMap);
+						}
+						foreach ($_interfaces as $_interface){
+							$contentTypes = Settings::getSettings(Package::Name,"serializers.$_interface");
+							if(is_array($contentTypes)){
+								$contentTypeToSerializerMap = array_merge($contentTypes,$contentTypeToSerializerMap);
+							}
+						}
+					}
+				}else{
+					$contentTypeToSerializerMap = Settings::getSettings(Package::Name,"serializers.$dataType");
+				}
+				
+				$acceptPreferences = $this->getAcceptPreferenceTable($httpAccept);
+				$_serializer = $this->chooseSerializer($contentTypeToSerializerMap, $acceptPreferences);
+				
+				// write content-type header
+				$contentType = $_serializer["type"];
+				header("Content-Type : $contentType");
+				
+				// call serializer
+				$serializer = $_serializer["serializer"];
+				$serializedData = $this->serialize($serializer, $this->data);
+				
+				// output serialized data
+				echo $serializedData;
+			}
+		}catch (\Exception $e){
+			// if any exception , this should result in error
+			$this->exitWithError($e->getMessage());
 		}
-		
-		
 		exit();
 	}
 	
+	/**
+	 * This method exits the php scripts , resulting in 500 Internal Server Error
+	 * 
+	 * @param $message message to log
+	 */
 	private function exitWithError($message){
 		header($_SERVER['SERVER_PROTOCOL']." 500 Internal Server Error");
-		new InternalServerError($message);
+		new InternalServerError($message); // for logging purpose a new InternalServerError exception is created, but not thrown
+		// clear buffer , if any
+		if(ob_get_length() !== false){
+			ob_clean();
+		}
 		exit();
 	}
 	
+	/**
+	 * invokes serilizer with provided data
+	 * 
+	 * @param string $serializerClass class name of the serializer
+	 * @param mixed $data data to be passed as argument to serialize method
+	 * 
+	 * @return string serializedData
+	 */ 
 	private function serialize($serializerClass,$data){
 		if(!class_exists($serializerClass,true)){
-			self::exitWithError("Serializer class $serializerClass does not exist");
+			$this->exitWithError("Serializer class $serializerClass does not exist");
 		}
 		
 		$reflectionClass = new \ReflectionClass($serializerClass);
 		$serializerInterface = 'PhpPlatform\RESTFul\Serialization\Serialize';
 		if(!($reflectionClass->implementsInterface($serializerInterface))){
-			self::exitWithError("$serializerClass does not implement $serializerInterface");
+			$this->exitWithError("$serializerClass does not implement $serializerInterface");
 		}
 		$serializerInstance = $reflectionClass->newInstance();
 		$serializeMethod = $reflectionClass->getMethod("serialize");
@@ -160,6 +187,12 @@ class HTTPResponse{
 		return $serializedData;
 	}
 	
+	/**
+	 * converts Accept header into array of acceptTypes based on their preferences
+	 * @param string $acceptString Accept Header as sent by the client
+	 * 
+	 * @return array of each acceptTypes grouped by their quality parameter
+	 */ 
 	private function getAcceptPreferenceTable($acceptString){
 		$acceptsPreferences = array();
 		if(!isset($acceptString) || $acceptString == ""){
@@ -241,10 +274,19 @@ class HTTPResponse{
 		return $classAndInterfces+$parentClassAndInterfaces;
 	}
 	
-	
-	
-	
+	/**
+	 * This method chooses serializer for the accept-preferences
+	 * 
+	 * @param $contentTypeToSerializer map of content-type to serializer 
+	 * @param $acceptPreferences accept preferences grouped by their quality parameter
+	 * 
+	 * @return array containing type and serializer
+	 *             ["type"] content-type of the choosen Serializer
+	 *             ["serializer"] classname of the serializer
+	 */ 
 	private function chooseSerializer($contentTypeToSerializer,$acceptPreferences){
+		
+		$serializerToContentType = array_flip($contentTypeToSerializer);
 		
 		$_contentTypeToSerializer = array();
 		$isFirst = true;
@@ -270,7 +312,7 @@ class HTTPResponse{
 				break;
 			}
 		}
-		return $serializer;
+		return array("type"=>$serializerToContentType[$serializer],"serializer"=>$serializer);
 	}
 	
 
