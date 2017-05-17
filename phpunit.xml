@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<phpunit colors="true" bootstrap="vendor/autoload.php" >
+<phpunit colors="true" bootstrap="tests/autoload.php" >
+    <php>
+        <const name="APP_HOME_URL" value="http://localhost/php-platform/restful"/>
+        <const name="APP_COVERAGE" value="true"/>
+    </php>
     <testsuites>
         <testsuite name="php-platform\restful">
             <directory suffix=".php">./tests</directory>

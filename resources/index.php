@@ -1,5 +1,7 @@
 <?php
 
+use PhpPlatform\RESTFul\Routing\Route;
+
 if (get_magic_quotes_gpc()) {
     $process = array(&$_GET, &$_POST, &$_COOKIE, &$_REQUEST);
     while (list($key, $val) = each($process)) {
@@ -16,10 +18,10 @@ if (get_magic_quotes_gpc()) {
     unset($process);
 }
 
-require dirname(__FILE__).'/vendor/autoload.php';
+require_once dirname(__FILE__).'/vendor/autoload.php';
 
 $requestUri = $_REQUEST["__route__"];
 $_SERVER['REQUEST_URI'] == $requestUri;
-\PhpPlatform\RESTFul\Route::run($requestUri);
+PhpPlatform\RESTFul\Routing\Route::run($requestUri);
 
 ?>

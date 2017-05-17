@@ -14,11 +14,14 @@ This package provides a platform for creating such RESTFul APIs in PHP
 * Annotated APIs 
 * can be used with any frameworks 
 
-### Example
+## Usage
 
-For More Usage please see the included tests 
+* Service Class must implement ``PhpPlatform\RESTFul\RESTService``
+* annotate service classes and methods with ``@Path`` to specify the path to which the the perticular class::method provides the service
+* configure routes as mentioned in the Configuration section below 
+* All service methods must return ``PhpPlatform\RESTFul\HTTPResponse``
 
-### Configuration
+## Configuration
 
 This section explains the configuration for this package which can be configured using config.xml
 
@@ -74,4 +77,47 @@ function myService(){}
 
 #### routes
 routes is the static map of url pattern to service class and methods
-can be updated manually or generated from [php-platform/restful-build-routes](https://github.com/PHPPlatform/restful-build-routes) package
+can be updated manually or generated from [php-platform/restful-build-routes](https://github.com/PHPPlatform/restful-build-routes) package.
+
+routes is organized as a tree , where each node contains the class and method name of the service available for that url path 
+
+web services for these url patterns will be configured as follows
+
+ * ``GET  /user/all    :- MyService\User::getAllUsers``
+ * ``POST /user/create :- MyService\User::createUser``
+ * ``GET  /user/{id}   :- MyService\User::getUser``
+
+``` JSON
+"routes" : {
+    "children" : {
+        "user" : {
+            "children" : {
+                "all" : {
+                    "methods" : {
+                        "GET" : {
+                            "class" : "MyService\\User",
+                            "method" : "getAllUsers"
+                        }
+                    }
+                },
+                "create" : {
+                    "methods" : {
+                        "POST" : {
+                            "class" : "MyService\\User",
+                            "method" : "createUser"
+                        }
+                    }
+                },
+                "*" : {
+                    "methods" : {
+                        "GET" : {
+                            "class" : "MyService\\User",
+                            "method" : "getUser"
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+```
