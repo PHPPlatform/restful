@@ -17,7 +17,7 @@ chmod +x /usr/local/bin/phpunit
 apt-get install wget -yqq
 
 #install zip unzip required by some dependecy packages
-apt-get install zip unzip php5.6-zip -yqq
+apt-get install zip unzip -yqq
 
 #install composer
 wget https://composer.github.io/installer.sig -O - -q | tr -d '\n' > installer.sig
