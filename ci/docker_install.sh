@@ -19,3 +19,6 @@ php -r "if (hash_file('SHA384', 'composer-setup.php') === file_get_contents('ins
 php composer-setup.php
 php -r "unlink('composer-setup.php'); unlink('installer.sig');"
 php composer.phar update
+
+cat /etc/apache2/ports.conf
+apache2ctl status
