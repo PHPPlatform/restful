@@ -12,4 +12,4 @@ test_7.1:
     - ./vendor/bin/phpunit -c phpunit.xml
 
 after_script:
-  - bash <(curl -s https://codecov.io/bash)
+#  - bash <(curl -s https://codecov.io/bash)

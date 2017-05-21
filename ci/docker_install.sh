@@ -13,8 +13,11 @@ apt-get install git -yqq
 curl --location --output /usr/local/bin/phpunit https://phar.phpunit.de/phpunit.phar
 chmod +x /usr/local/bin/phpunit
 
-#install wget
+#install wget needed to install composer
 apt-get install wget -yqq
+
+#install zip unzip required by some dependecy packages
+apt-get install zip unzip php-zip -yqq
 
 #install composer
 wget https://composer.github.io/installer.sig -O - -q | tr -d '\n' > installer.sig
