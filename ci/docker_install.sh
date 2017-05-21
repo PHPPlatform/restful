@@ -33,4 +33,7 @@ php -r "unlink('composer-setup.php'); unlink('installer.sig');"
 php composer.phar update
 
 cat /etc/apache2/ports.conf
+
+#install elinks
+apt-get install elinks
 apache2ctl status
