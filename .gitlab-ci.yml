@@ -1,5 +1,5 @@
 before_script:
-  - bash ci/docker_install.sh > /dev/null
+  - bash ci/docker_install.sh
 
 test_5.6:
   image : php:5.6-apache
