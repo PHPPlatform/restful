@@ -6,10 +6,10 @@ test_5.6:
   script :
     - ./vendor/bin/phpunit -c phpunit.xml
 
-test_7.1:
-  image : php:7.1-apache
-  script :
-    - ./vendor/bin/phpunit -c phpunit.xml
+# test_7.1:
+#  image : php:7.1-apache
+#  script :
+#    - ./vendor/bin/phpunit -c phpunit.xml
 
 after_script:
 #  - bash <(curl -s https://codecov.io/bash)

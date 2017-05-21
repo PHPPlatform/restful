@@ -19,6 +19,11 @@ apt-get install wget -yqq
 #install zip unzip required by some dependecy packages
 apt-get install zip unzip -yqq
 
+#install xdebug
+apt-get install php5-xdebug -yqq
+
+php --ini
+
 #install composer
 wget https://composer.github.io/installer.sig -O - -q | tr -d '\n' > installer.sig
 php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
