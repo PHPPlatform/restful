@@ -21,6 +21,7 @@ apt-get install zip unzip -yqq
 
 #install xdebug
 apt-get install php5-xdebug -yqq
+echo "\nzend_extension = xdebug.so" >> /usr/local/etc/php/php.ini
 
 php --ini
 
