@@ -35,5 +35,5 @@ php composer.phar update
 cat /etc/apache2/ports.conf
 
 #install elinks
-apt-get install elinks
+apt-get install elinks -yqq
 apache2ctl status
