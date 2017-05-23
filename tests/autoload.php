@@ -16,8 +16,8 @@ $index = file_get_contents($packageRootDir.'/resources/index.php');
 
 
 if(defined('APP_COVERAGE') && APP_COVERAGE == "true"){
-	// concat tests/__indexFixture.php and resources/index.php and copy to {package_root}/index.php
-	$__indexFixture = file_get_contents($packageRootDir.'/tests/__indexFixture.php');
+	// concat tests/index.inc and resources/index.php and copy to {package_root}/index.php
+	$__indexFixture = file_get_contents($packageRootDir.'/tests/index.inc');
 	
 	// get a temp directory to store coverage files for each request in this run
 	$coverageDir = sys_get_temp_dir().'/php-platform/restful/test-coverage/'.microtime(true);
