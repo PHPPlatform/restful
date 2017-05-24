@@ -15,6 +15,8 @@ class TestRoute extends \PHPUnit_Framework_TestCase {
 		$response = $client->send($request);
 		
 		$this->assertEquals(200, $response->getStatusCode());
+		
+		echo $response->getBody(true).PHP_EOL;
 	}
 
 }
