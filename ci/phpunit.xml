@@ -8,12 +8,12 @@
     </php>
     <testsuites>
         <testsuite name="php-platform\restful">
-            <directory suffix=".php">./tests</directory>
+            <directory suffix=".php">../tests</directory>
         </testsuite>
     </testsuites>
     <filter>
         <whitelist>
-            <directory suffix=".php">./src/</directory>
+            <directory suffix=".php">../src/</directory>
         </whitelist>
     </filter>
 </phpunit>
