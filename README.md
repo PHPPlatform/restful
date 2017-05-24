@@ -1,7 +1,8 @@
 # PHP Platforms RESTFul Apis
 This packages provides platform for writing RESTFul APIs in PHP 
 
-[![Build Status](https://travis-ci.org/PHPPlatform/restful.svg?branch=master)](https://travis-ci.org/PHPPlatform/restful)
+[![build status](https://gitlab.com/php-platform/restful/badges/master/build.svg)](https://gitlab.com/php-platform/restful/commits/master) [![coverage report](https://gitlab.com/php-platform/restful/badges/master/coverage.svg)](https://gitlab.com/php-platform/restful/commits/master)
+
 
 ## Introduction
 RESTful APIs are modern way of designing an web application , this approach provides the UI Dresigners complete freedom of their design and improvement 
