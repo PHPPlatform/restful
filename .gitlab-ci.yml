@@ -1,4 +1,10 @@
 before_script:
+  - echo "<Directory /var/www/html/restful>" > /etc/apache2/conf-available/restful.conf
+  - echo "    AllowOverride All" >> /etc/apache2/conf-available/restful.conf
+  - echo "</Directory>" >> /etc/apache2/conf-available/restful.conf
+  - a2enconf restful.conf
+  - a2enmod rewrite
+  - apache2ctl start
   - ln -s /builds/php-platform/restful /var/www/html/restful
   - composer update
 
