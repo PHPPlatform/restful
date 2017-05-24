@@ -34,25 +34,32 @@ class HTTPRequest {
 		$this->headers = self::getHeaders();
 		
 		// deserialize the content
-		$contentType = $this->headers['Content-Type'];
-		$internalContentType = $_SERVER['PLATFORM_INTERNAL_CONTENT_TYPE'];
-		
-		$deserializer = Settings::getSettings(Package::Name,"deserializers.$contentType.$internalContentType");
-		
-		if(!class_exists($deserializer, true)){
-			throw new NotAcceptable("$contentType Not Acceptable");
+		if(strtoupper($this->method) != 'GET' && strtoupper($this->method) != 'TRACE'){
+			$data = file_get_contents('php://input');
+			if(array_key_exists('Content-Type', $this->headers)){
+				$contentType = $this->headers['Content-Type'];
+				$internalContentType = $_SERVER['PLATFORM_INTERNAL_CONTENT_TYPE'];
+				
+				$deserializer = Settings::getSettings(Package::Name,"deserializers.$contentType.$internalContentType");
+				
+				if(!class_exists($deserializer, true)){
+					throw new NotAcceptable("$contentType Not Acceptable");
+				}
+				
+				$deserializerReflectionClass = new \ReflectionClass($deserializer);
+				$deserializerInterface = 'PhpPlatform\RESTFul\Serialization\Deserialize';
+				if(!in_array($deserializerInterface, $deserializerReflectionClass->getInterfaceNames())){
+					throw new InternalServerError("$deserializer does not implement $deserializerInterface");
+				}
+				
+				$reflectionMethod = $deserializerReflectionClass->getMethod('deserialize');
+				
+				$this->data = $reflectionMethod->invoke(null,$data);
+			}else{
+				$this->data = $data;
+			}
+			
 		}
-		
-		$deserializerReflectionClass = new \ReflectionClass($deserializer);
-		$deserializerInterface = 'PhpPlatform\RESTFul\Serialization\Deserialize';
-		if(!in_array($deserializerInterface, $deserializerReflectionClass->getInterfaceNames())){
-			throw new InternalServerError("$deserializer does not implement $deserializerInterface");
-		}
-		
-		$reflectionMethod = $deserializerReflectionClass->getMethod('deserialize');
-		
-		$this->data = $reflectionMethod->invoke(null,file_get_contents('php://input'));
-		
 	}
 	
 	/**
