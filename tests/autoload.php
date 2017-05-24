@@ -23,6 +23,8 @@ if(defined('APP_COVERAGE') && APP_COVERAGE == "true"){
 	$coverageDir = sys_get_temp_dir().'/php-platform/restful/test-coverage/'.microtime(true);
 	mkdir($coverageDir,0777,true);
 	
+	echo $coverageDir.PHP_EOL;
+	
 	$__indexFixture = str_replace('COVERAGE_DIR', "'$coverageDir'", $__indexFixture);
 	
 	$index = $__indexFixture.$index;
@@ -36,7 +38,6 @@ if(defined('APP_COVERAGE') && APP_COVERAGE == "true"){
 		foreach ($coverageFiles as $coverageFile){
 			$coverage = include $coverageDir.'/'.$coverageFile;
 			echo "coverageFile ".$coverageFile.PHP_EOL;
-			echo $coverage.PHP_EOL;
 			$phpCodeCoverage->merge($coverage);
 		}
 		
