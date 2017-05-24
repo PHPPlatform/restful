@@ -1,4 +1,5 @@
 before_script:
+  - ln -s /builds/php-platform/restful /var/www/html/restful
   - composer update
 
 test_5.4:
