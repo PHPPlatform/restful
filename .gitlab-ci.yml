@@ -13,4 +13,4 @@ test_5.4:
 #    - ./vendor/bin/phpunit -c phpunit.xml
 
 after_script:
-  - bash <(curl -s https://codecov.io/bash)
+  - bash <(curl -s https://codecov.io/bash) -t c09c03aa-44ab-4b07-934e-f20fd3a604c1
