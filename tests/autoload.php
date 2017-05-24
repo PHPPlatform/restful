@@ -23,7 +23,6 @@ if(defined('APP_COVERAGE') && APP_COVERAGE == "true"){
 	$coverageDir = sys_get_temp_dir().'/php-platform/restful/test-coverage/'.microtime(true);
 	mkdir($coverageDir,0777,true);
 	chmod($coverageDir, 0777);
-	echo $coverageDir.PHP_EOL;
 	
 	$__indexFixture = str_replace('COVERAGE_DIR', "'$coverageDir'", $__indexFixture);
 	

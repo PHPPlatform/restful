@@ -18,7 +18,6 @@ register_shutdown_function(function () use ($coverage){
 	
 	// COVERAGE_DIR to be replaced by a new temp direcory for every run
 	$writer->process($coverage, COVERAGE_DIR.'/'.$coverageFileName);
-	
 });
 
 ?>
