@@ -17,6 +17,9 @@ This package provides a platform for creating such RESTFul APIs in PHP
 
 ## Usage
 
+* copy `resources/.htaccess` and `resources/index.php` to the root of the composer package
+* enable apache `rewrite` module 
+* add `AllowOveride All` to composer root directory in apache's configuration
 * Service Class must implement ``PhpPlatform\RESTFul\RESTService``
 * annotate service classes and methods with ``@Path`` to specify the path to which the the perticular class::method provides the service
 * configure routes as mentioned in the Configuration section below 
