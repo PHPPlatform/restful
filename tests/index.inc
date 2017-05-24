@@ -18,6 +18,9 @@ register_shutdown_function(function () use ($coverage){
 	
 	// COVERAGE_DIR to be replaced by a new temp direcory for every run
 	$writer->process($coverage, COVERAGE_DIR.'/'.$coverageFileName);
+	
+	echo "COVERAGE_DIR : ".COVERAGE_DIR.'/'.$coverageFileName.PHP_EOL;
+	echo file_get_contents(COVERAGE_DIR.'/'.$coverageFileName).PHP_EOL;
 });
 
 ?>
