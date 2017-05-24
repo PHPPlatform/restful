@@ -5,7 +5,7 @@
 set -xe
 
 # copy php-ci.ini to PHP_INI_SCAN_DIR
-cp /build/php-platform/restful/ci/php-ci.ini /usr/local/etc/php/conf.d/php-ci.ini
+cp /builds/php-platform/restful/ci/php-ci.ini /usr/local/etc/php/conf.d/php-ci.ini
 
 # apache configuration
 echo "<Directory /var/www/html/restful>" > /etc/apache2/conf-available/restful.conf
