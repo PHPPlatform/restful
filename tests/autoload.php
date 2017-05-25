@@ -36,7 +36,6 @@ if(defined('APP_COVERAGE') && APP_COVERAGE == "true"){
 		
 		foreach ($coverageFiles as $coverageFile){
 			$coverage = include $coverageDir.'/'.$coverageFile;
-			echo "coverageFile ".$coverageFile.PHP_EOL;
 			$phpCodeCoverage->merge($coverage);
 		}
 		

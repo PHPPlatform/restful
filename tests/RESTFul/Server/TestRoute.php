@@ -12,11 +12,19 @@ use PhpPlatform\RESTFul\HTTPResponse;
 class TestRoute implements RESTService{
 	
 	/**
+	 * @Path /empty
+	 * @GET
+	 */
+	function emptyTest(){
+		return new HTTPResponse();
+	}
+	
+	/**
 	 * @Path /simple
 	 * @GET
 	 */
 	function simpleTest(){
-		return new HTTPResponse();
+		return new HTTPResponse(200,'OK',"Simple output");
 	}
 	
 }

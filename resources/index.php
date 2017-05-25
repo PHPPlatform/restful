@@ -1,6 +1,8 @@
 <?php
 
-use PhpPlatform\RESTFul\Routing\Route;
+require_once dirname(__FILE__).'/vendor/autoload.php';
+
+PhpPlatform\Errors\ErrorHandler::handleError();
 
 if (get_magic_quotes_gpc()) {
     $process = array(&$_GET, &$_POST, &$_COOKIE, &$_REQUEST);
@@ -18,7 +20,6 @@ if (get_magic_quotes_gpc()) {
     unset($process);
 }
 
-require_once dirname(__FILE__).'/vendor/autoload.php';
 
 $requestUri = $_REQUEST["__route__"];
 $_SERVER['REQUEST_URI'] == $requestUri;
