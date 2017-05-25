@@ -43,7 +43,7 @@ class Route {
 				// flush HTTPResponse
 				$httpResponse->flush($httpRequest->getHeader('Accept'));
 			}else{
-				throw new InternalServerError();
+				throw new InternalServerError("Service method does not return instance of PhpPlatform\RESTFul\HTTPResponse");
 			}
 			
 		}catch (HttpException $h){

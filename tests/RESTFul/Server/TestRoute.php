@@ -34,5 +34,13 @@ class TestRoute implements RESTService{
 	function getJSON(){
 		return new HTTPResponse(200,'OK',array("this"=>array("is","JSON","from","array")));
 	}
+
+	/**
+	 * @Path /wrong-response
+	 * @GET
+	 */
+	function wrongResponse(){
+		return array("this"=>array("is","JSON","from","array"));
+	}
 	
 }

@@ -7,7 +7,6 @@ use Guzzle\Http\Client;
 use PhpPlatform\Tests\RestFul\TestBase;
 use Guzzle\Http\Exception\ServerErrorResponseException;
 use PhpPlatform\Config\Settings;
-use PhpPlatform\RESTFul\Package;
 
 class TestRoute extends TestBase {
 	
