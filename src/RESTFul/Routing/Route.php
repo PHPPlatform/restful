@@ -47,7 +47,11 @@ class Route {
 			}
 			
 		}catch (HttpException $h){
-			(new HTTPResponse($h->getCode(),$h->getMessage()))->flush();
+			$message = $h->getMessage();
+			if($h instanceof InternalServerError){
+				$message = "Internal Server Error";
+			}
+			(new HTTPResponse($h->getCode(),$message))->flush();
 		}catch (\Exception $e){
 			new InternalServerError($e->getMessage()); // for logging purposes
 			(new HTTPResponse(500,'Internal Server Error'))->flush();
