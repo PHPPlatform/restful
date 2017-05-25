@@ -104,26 +104,30 @@ class HTTPResponse{
 			if($dataType == "NULL"){
 				// don't do anything
 			}else{
+				$serializers = Settings::getSettings(Package::Name,"serializers");
+				if($serializers == null){
+					$serializers = array();
+				}
+				$contentTypeToSerializerMap = array();
 				if($dataType == "object"){
 					$className = get_class($this->data);
 					
 					$classAndInterfaces = $this->getParentsAndInterfaces($className);
 					
-					$contentTypeToSerializerMap = array();
 					foreach ($classAndInterfaces as $_className=>$_interfaces){
-						$contentTypes = Settings::getSettings(Package::Name,"serializers.$_className");
-						if(is_array($contentTypes)){
-							$contentTypeToSerializerMap = array_merge($contentTypes,$contentTypeToSerializerMap);
+						if(array_key_exists($_className, $serializers) && is_array($serializers[$_className])){
+							$contentTypeToSerializerMap = array_merge($serializers[$_className],$contentTypeToSerializerMap);
 						}
 						foreach ($_interfaces as $_interface){
-							$contentTypes = Settings::getSettings(Package::Name,"serializers.$_interface");
-							if(is_array($contentTypes)){
-								$contentTypeToSerializerMap = array_merge($contentTypes,$contentTypeToSerializerMap);
+							if(array_key_exists($_interface, $serializers) && is_array($serializers[$_interface])){
+								$contentTypeToSerializerMap = array_merge($serializers[$_interface],$contentTypeToSerializerMap);
 							}
 						}
 					}
 				}else{
-					$contentTypeToSerializerMap = Settings::getSettings(Package::Name,"serializers.$dataType");
+					if(array_key_exists($dataType, $serializers) && is_array($serializers[$dataType])){
+						$contentTypeToSerializerMap = array_merge($serializers[$dataType],$contentTypeToSerializerMap);
+					}
 				}
 				
 				$acceptPreferences = $this->getAcceptPreferenceTable($httpAccept);
@@ -312,7 +316,12 @@ class HTTPResponse{
 				break;
 			}
 		}
-		return array("type"=>$serializerToContentType[$serializer],"serializer"=>$serializer);
+		
+		$type = null;
+		if(array_key_exists($serializer, $serializerToContentType)){
+			$type = $serializerToContentType[$serializer];
+		}
+		return array("type"=>$type,"serializer"=>$serializer);
 	}
 	
 

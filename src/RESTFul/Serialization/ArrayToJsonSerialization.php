@@ -5,7 +5,7 @@ namespace PhpPlatform\RESTFul\Serialization;
 use PhpPlatform\RESTFul\Serialization\Deserialize;
 use PhpPlatform\RESTFul\Serialization\Serialize;
 
-class JsonToArraySerialization implements Serialize, Deserialize {
+class ArrayToJsonSerialization implements Serialize, Deserialize {
 	
 	/**
 	 * serializes the $data
@@ -13,7 +13,7 @@ class JsonToArraySerialization implements Serialize, Deserialize {
 	 *
 	 * @return string JSON String representaion of the data
 	 */
-	public static function serialize(array $data) {
+	public static function serialize($data) {
 		return json_encode($data);
 	}
 	

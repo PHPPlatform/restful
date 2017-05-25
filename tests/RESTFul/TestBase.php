@@ -3,6 +3,8 @@
 namespace PhpPlatform\Tests\RestFul;
 
 use PhpPlatform\Mock\Config\MockSettings;
+use PhpPlatform\Config\Settings;
+use PhpPlatform\Config\SettingsCache;
 
 abstract class TestBase extends \PHPUnit_Framework_TestCase {
 	
@@ -17,6 +19,9 @@ abstract class TestBase extends \PHPUnit_Framework_TestCase {
 		chmod($errorLogDir, 0777);
 		
 		self::$errorLogDir = $errorLogDir;
+		
+		// clear caches
+		SettingsCache::getInstance()->reset();
 	}
 	
 	function setUp(){

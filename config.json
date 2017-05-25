@@ -1,19 +1,22 @@
 {
     "webroot":"",
     "serializers":{
+        "string":{
+            "text/plain":"PhpPlatform\\RESTFul\\Serialization\\StringToPlainTextSerialization"
+        },
         "array":{
-            "application/json":"PhpPlatform\\RESTFul\\Serialization\\JsonToArraySerialization"
+            "application/json":"PhpPlatform\\RESTFul\\Serialization\\ArrayToJsonSerialization"
         },
         "SimpleXMLElement":{
-            "application/xml":"PhpPlatform\\RESTFul\\Serialization\\XmlToSimpleXMLElementSerialization"
+            "application/xml":"PhpPlatform\\RESTFul\\Serialization\\SimpleXMLElementToXmlSerialization"
         }
     },
     "deserializers":{
         "application/json":{
-            "array":"PhpPlatform\\RESTFul\\Serialization\\JsonToArraySerialization"
+            "array":"PhpPlatform\\RESTFul\\Serialization\\ArrayToJsonSerialization"
         },
         "application/xml":{
-            "SimpleXMLElement":"PhpPlatform\\RESTFul\\Serialization\\XmlToSimpleXMLElementSerialization"
+            "SimpleXMLElement":"PhpPlatform\\RESTFul\\Serialization\\SimpleXMLElementToXmlSerialization"
         },
         "multipart/form-data":{
             "array":"PhpPlatform\\RESTFul\\Serialization\\MultiPartFormToArrayDeserialization"

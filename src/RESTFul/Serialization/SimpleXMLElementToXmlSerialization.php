@@ -5,7 +5,7 @@ namespace PhpPlatform\RESTFul\Serialization;
 use PhpPlatform\RESTFul\Serialization\Deserialize;
 use PhpPlatform\RESTFul\Serialization\Serialize;
 
-class XmlToSimpleXMLElementSerialization implements Serialize, Deserialize {
+class SimpleXMLElementToXmlSerialization implements Serialize, Deserialize {
 	
 	/**
 	 * serializes the $data 
@@ -13,7 +13,7 @@ class XmlToSimpleXMLElementSerialization implements Serialize, Deserialize {
 	 * 
 	 * @return string XML String representaion of the data
 	 */
-	public static function serialize(\SimpleXMLElement $data) {
+	public static function serialize($data) {
 		return $data->asXML();
 	}
 	

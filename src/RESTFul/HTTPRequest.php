@@ -120,7 +120,11 @@ class HTTPRequest {
 	 * @return string
 	 */
 	function getQueryParam($name){
-	    return $this->queryParams[$name];
+		if(array_key_exists($name, $this->queryParams)){
+			return $this->queryParams[$name];
+		}else{
+			return null;
+		}
 	}
 	
 	/**
@@ -129,7 +133,11 @@ class HTTPRequest {
 	 * @return string
 	 */
 	function getHeader($name){
-	    return $this->headers[$name];
+		if(array_key_exists($name, $this->headers)){
+			return $this->headers[$name];
+		}else{
+			return null;
+		}
 	}
 	
 	/**
