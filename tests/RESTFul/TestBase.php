@@ -3,7 +3,6 @@
 namespace PhpPlatform\Tests\RestFul;
 
 use PhpPlatform\Mock\Config\MockSettings;
-use PhpPlatform\Config\Settings;
 use PhpPlatform\Config\SettingsCache;
 
 abstract class TestBase extends \PHPUnit_Framework_TestCase {
@@ -22,6 +21,9 @@ abstract class TestBase extends \PHPUnit_Framework_TestCase {
 		
 		// clear caches
 		SettingsCache::getInstance()->reset();
+		
+		MockSettings::setSettings("php-platform/restful", "webroot", APP_PATH);
+		
 	}
 	
 	function setUp(){
