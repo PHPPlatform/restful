@@ -87,7 +87,7 @@ class HTTPResponse{
 			header($_SERVER['SERVER_PROTOCOL']." ".$this->code." ".$this->message);
 			
 			foreach ($this->headers as $name=>$value){
-				header("$name : $value");
+				header("$name:$value");
 			}
 			
 			// clear buffer , if any
@@ -135,7 +135,7 @@ class HTTPResponse{
 				
 				// write content-type header
 				$contentType = $_serializer["type"];
-				header("Content-Type : $contentType");
+				header("Content-Type:$contentType");
 				
 				// call serializer
 				$serializer = $_serializer["serializer"];

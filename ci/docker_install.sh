@@ -12,6 +12,7 @@ echo "<Directory /var/www/html/restful>" > /etc/apache2/conf-available/restful.c
 echo "    AllowOverride All" >> /etc/apache2/conf-available/restful.conf
 echo "</Directory>" >> /etc/apache2/conf-available/restful.conf
 a2enconf restful.conf
+a2ensite 000-default
 a2enmod rewrite
 apache2ctl start
 
