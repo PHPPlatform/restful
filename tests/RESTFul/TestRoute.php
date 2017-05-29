@@ -56,6 +56,7 @@ class TestRoute extends TestBase {
 			$response = $e->getResponse();
 			$this->assertEquals(500, $response->getStatusCode());
 			$this->assertEquals("Internal Server Error", $response->getReasonPhrase());
+			$this->assertEquals("", $response->getBody(true));
 			
 			// validate log
 			$logFile = Settings::getSettings('php-platform/errors','traces.Http');
@@ -64,6 +65,64 @@ class TestRoute extends TestBase {
 				$log = file_get_contents($logFile);
 			}
 			$this->assertContains('PhpPlatform\Tests\RESTFul\Server\TestRouteNonService does not implement PhpPlatform\RESTFul\RESTService', $log);
+			unlink($logFile);
+			
+			$isException = true;
+		}
+		$this->assertTrue($isException);
+	}
+	
+	function testWrongResponceFromServiceMethod(){
+		MockSettings::setSettings("php-platform/restful", "routes.children.test.children.route.children.wrong-response.methods.GET", array("class"=>'PhpPlatform\Tests\RESTFul\Server\TestRoute',"method"=>"wrongResponse"));
+		
+		$client = new Client();
+		$request = $client->get(APP_DOMAIN.'/'.APP_PATH.'/test/route/wrong-response');
+		
+		$isException = false;
+		try{
+			$client->send($request);
+		}catch (ServerErrorResponseException $e){
+			$response = $e->getResponse();
+			$this->assertEquals(500, $response->getStatusCode());
+			$this->assertEquals("Internal Server Error", $response->getReasonPhrase());
+			$this->assertEquals("", $response->getBody(true));
+			
+			// validate log
+			$logFile = Settings::getSettings('php-platform/errors','traces.Http');
+			$log = "";
+			if(file_exists($logFile)){
+				$log = file_get_contents($logFile);
+			}
+			$this->assertContains('Service method does not return instance of PhpPlatform\RESTFul\HTTPResponse', $log);
+			unlink($logFile);
+			
+			$isException = true;
+		}
+		$this->assertTrue($isException);
+	}
+	
+	function testExceptionFromServiceMethod(){
+		MockSettings::setSettings("php-platform/restful", "routes.children.test.children.route.children.exception.methods.GET", array("class"=>'PhpPlatform\Tests\RESTFul\Server\TestRoute',"method"=>"exception"));
+		
+		$client = new Client();
+		$request = $client->get(APP_DOMAIN.'/'.APP_PATH.'/test/route/exception');
+		
+		$isException = false;
+		try{
+			$client->send($request);
+		}catch (ServerErrorResponseException $e){
+			$response = $e->getResponse();
+			$this->assertEquals(500, $response->getStatusCode());
+			$this->assertEquals("Internal Server Error", $response->getReasonPhrase());
+			$this->assertEquals("", $response->getBody(true));
+			
+			// validate log
+			$logFile = Settings::getSettings('php-platform/errors','traces.Http');
+			$log = "";
+			if(file_exists($logFile)){
+				$log = file_get_contents($logFile);
+			}
+			$this->assertContains('Testing Uncaught Bad Input Exception in Service', $log);
 			unlink($logFile);
 			
 			$isException = true;

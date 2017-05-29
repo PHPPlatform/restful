@@ -4,6 +4,7 @@ namespace PhpPlatform\Tests\RESTFul\Server;
 
 use PhpPlatform\RESTFul\RESTService;
 use PhpPlatform\RESTFul\HTTPResponse;
+use PhpPlatform\Errors\Exceptions\Application\BadInputException;
 
 /**
  * @Path /test/route
@@ -42,5 +43,14 @@ class TestRoute implements RESTService{
 	function wrongResponse(){
 		return array("this"=>array("is","JSON","from","array"));
 	}
+	
+	/**
+	 * @Path /exception
+	 * @GET
+	 */
+	function exception(){
+		throw new BadInputException("Testing Uncaught Bad Input Exception in Service");
+	}
+	
 	
 }
