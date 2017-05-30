@@ -123,4 +123,44 @@ class TestHTTPResponse extends TestServerSide{
 		$this->assertEquals($expected, $reflectionProperty->getValue($response));
 	}
 	
+	function testGetAcceptpreferenceTable(){
+		$response = new HTTPResponse();
+		$reflectionMethod = new \ReflectionMethod(get_class($response),'getAcceptPreferenceTable');
+		$reflectionMethod->setAccessible(true);
+		
+		$preferenceTable = $reflectionMethod->invoke($response,'application/json ;q=0.8,text/json;');
+		$this->assertEquals(array(
+				'1'=>array(
+						'text/json;'
+				),
+				'0.8'=>array(
+						'application/json'
+				)
+		), $preferenceTable);
+		
+		$preferenceTable = $reflectionMethod->invoke($response,'{"type":"application/json;q=1.0"}');
+		
+		$this->assertEquals(array(
+				'1'=>array(
+						'{"type":"application/json;q=1.0"}'
+				)
+		), $preferenceTable);
+		
+		$preferenceTable = $reflectionMethod->invoke($response,'*/*;q=0.8,text/plain;q=0.8,text/html;q=0.8,application/json');
+		
+		$this->assertEquals(array(
+				'1' => array(
+						"application/json"
+				),
+				'0.8' => array(
+				        "text/plain",
+						"text/html",
+						"*/*"
+				)		
+			), $preferenceTable);
+		
+	}
+	
+	
+	
 }
