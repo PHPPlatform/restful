@@ -1,6 +1,6 @@
 <?php
 
-namespace PhpPlatform\Tests\RESTFul;
+namespace PhpPlatform\Tests\RESTFul\ServerSide;
 
 use PhpPlatform\RESTFul\HTTPResponse;
 use PhpPlatform\Errors\Exceptions\Application\BadInputException;

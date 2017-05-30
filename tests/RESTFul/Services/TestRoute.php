@@ -1,6 +1,6 @@
 <?php
 
-namespace PhpPlatform\Tests\RESTFul\Server;
+namespace PhpPlatform\Tests\RESTFul\Services;
 
 use PhpPlatform\RESTFul\RESTService;
 use PhpPlatform\RESTFul\HTTPResponse;

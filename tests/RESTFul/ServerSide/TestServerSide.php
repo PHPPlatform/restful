@@ -1,6 +1,6 @@
 <?php
 
-namespace PhpPlatform\Tests\RESTFul;
+namespace PhpPlatform\Tests\RESTFul\ServerSide;
 
 use PhpPlatform\Tests\RestFul\TestBase;
 
@@ -21,7 +21,7 @@ abstract class TestServerSide extends TestBase {
 		// start coverage
 		if(defined('APP_COVERAGE') && APP_COVERAGE == "true"){
 			$filter = new \PHP_CodeCoverage_Filter();
-			$filter->addDirectoryToWhitelist(dirname(__FILE__).'/../../src');
+			$filter->addDirectoryToWhitelist(dirname(__FILE__).'/../../../src');
 			
 			self::$coverage = new \PHP_CodeCoverage(null,$filter);
 			self::$coverage->start('testRESTful');
