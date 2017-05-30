@@ -49,10 +49,68 @@ class TestHTTPResponse extends TestServerSide{
 			$isException = true;
 		}
 		$this->assertTrue($isException);
-	
+		
+		$response->setCode(404);
+		$this->assertHTTPResponseProperty('code', 404, $response);
 	}
 	
+	function testSetMessage(){
+		// bad input
+		$response = new HTTPResponse();
+		$isException = false;
+		try{
+			$response->setMessage(array());
+		}catch (BadInputException $e){
+			$this->assertEquals('Invalid Message', $e->getMessage());
+			$this->clearErrorLog();
+			$isException = true;
+		}
+		$this->assertTrue($isException);
+		
+		$response->setMessage('Good');
+		$this->assertHTTPResponseProperty('message', 'Good', $response);
+	}
 	
+	function testSetHeader(){
+		// bad input
+		$response = new HTTPResponse();
+		$isException = false;
+		try{
+			$response->setHeader(array('HName'), 'HValue');
+		}catch (BadInputException $e){
+			$this->assertEquals('Invalid Name or Value', $e->getMessage());
+			$this->clearErrorLog();
+			$isException = true;
+		}
+		$this->assertTrue($isException);
+		
+		$isException = false;
+		try{
+			$response->setHeader('HName', array('HValue'));
+		}catch (BadInputException $e){
+			$this->assertEquals('Invalid Name or Value', $e->getMessage());
+			$this->clearErrorLog();
+			$isException = true;
+		}
+		$this->assertTrue($isException);
+		
+		$response->setHeader('HName', 'HValue');
+		$this->assertHTTPResponseProperty('headers', array('HName'=>'HValue'), $response);
+
+		$response->setHeader('Content-Length', 200);
+		$response->setHeader('Time-Occurred', 1.5);
+		$response->setHeader('Content-Type', 'application/json');
+		$response->setHeader('Keep-Connection', true);
+		
+		$this->assertHTTPResponseProperty('headers', 
+				array(
+						'HName'=>'HValue',
+						'Content-Length'=>200,
+						'Time-Occurred'=> 1.5,
+						'Content-Type'=> 'application/json',
+						'Keep-Connection' => true
+				), $response);
+	}
 	
 	/**
 	 * @param string $propertyName

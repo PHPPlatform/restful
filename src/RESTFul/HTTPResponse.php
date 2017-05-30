@@ -50,12 +50,12 @@ class HTTPResponse{
 	
 	/**
 	 * @param string $name
-	 * @param string $value
+	 * @param int|float|string|boolean $value
 	 * 
 	 * @return HTTPResponse this object for method chaining
 	 */
 	function setHeader($name,$value){
-		if(!is_string($name) || !is_string($value)){
+		if(!is_string($name) || !is_scalar($value)){
 			throw new BadInputException('Invalid Name or Value');
 		}
 		$this->headers[$name] = $value;
