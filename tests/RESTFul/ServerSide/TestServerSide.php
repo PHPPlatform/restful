@@ -2,7 +2,7 @@
 
 namespace PhpPlatform\Tests\RESTFul\ServerSide;
 
-use PhpPlatform\Tests\RestFul\TestBase;
+use PhpPlatform\Tests\RESTFul\TestBase;
 
 /**
  * Coverage for this repo is generated in a differrent way other than passing --coverage-clover switch to phpunit 

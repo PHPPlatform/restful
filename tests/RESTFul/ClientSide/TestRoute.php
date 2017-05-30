@@ -4,7 +4,7 @@ namespace PhpPlatform\Tests\RESTFul\ClientSide;
 
 use PhpPlatform\Mock\Config\MockSettings;
 use Guzzle\Http\Client;
-use PhpPlatform\Tests\RestFul\TestBase;
+use PhpPlatform\Tests\RESTFul\TestBase;
 use Guzzle\Http\Exception\ServerErrorResponseException;
 use PhpPlatform\Config\Settings;
 use Guzzle\Http\Exception\ClientErrorResponseException;

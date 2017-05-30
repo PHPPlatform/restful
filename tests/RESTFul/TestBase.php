@@ -1,6 +1,6 @@
 <?php
 
-namespace PhpPlatform\Tests\RestFul;
+namespace PhpPlatform\Tests\RESTFul;
 
 use PhpPlatform\Mock\Config\MockSettings;
 use PhpPlatform\Config\SettingsCache;
