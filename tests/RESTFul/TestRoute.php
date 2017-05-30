@@ -229,5 +229,64 @@ class TestRoute extends TestBase {
 		}
 		$this->assertTrue($isException);
 	}
+	
+	function testClassOrMethodNotExists(){
+		// class not exists
+		MockSettings::setSettings("php-platform/restful", "routes.children.test.children.route.children.class-not-exists.methods.GET", array("class"=>'PhpPlatform\Tests\RESTFul\Server\TestRouteNotExists',"method"=>"someMethod"));
+		
+		$client = new Client();
+		$request = $client->get(APP_DOMAIN.'/'.APP_PATH.'/test/route/class-not-exists');
+		
+		$isException = false;
+		try{
+			$client->send($request);
+		}catch (ServerErrorResponseException $e){
+			$response = $e->getResponse();
+			$this->assertEquals(500, $response->getStatusCode());
+			$this->assertEquals('Internal Server Error', $response->getReasonPhrase());
+			$this->assertEquals('', $response->getBody(true));
+			
+			// validate log
+			$logFile = Settings::getSettings('php-platform/errors','traces.Http');
+			$log = "";
+			if(file_exists($logFile)){
+				$log = file_get_contents($logFile);
+			}
+			$this->assertContains('class and/or method does not exists for route at test/route/class-not-exists', $log);
+			unlink($logFile);
+			
+			$isException = true;
+		}
+		$this->assertTrue($isException);
+		
+		
+		// method not exists
+		MockSettings::setSettings("php-platform/restful", "routes.children.test.children.route.children.method-not-exists.methods.GET", array("class"=>'PhpPlatform\Tests\RESTFul\Server\TestRoute',"method"=>"methodNotExists"));
+		
+		$client = new Client();
+		$request = $client->get(APP_DOMAIN.'/'.APP_PATH.'/test/route/method-not-exists');
+		
+		$isException = false;
+		try{
+			$client->send($request);
+		}catch (ServerErrorResponseException $e){
+			$response = $e->getResponse();
+			$this->assertEquals(500, $response->getStatusCode());
+			$this->assertEquals('Internal Server Error', $response->getReasonPhrase());
+			$this->assertEquals('', $response->getBody(true));
+			
+			// validate log
+			$logFile = Settings::getSettings('php-platform/errors','traces.Http');
+			$log = "";
+			if(file_exists($logFile)){
+				$log = file_get_contents($logFile);
+			}
+			$this->assertContains('class and/or method does not exists for route at test/route/method-not-exists', $log);
+			unlink($logFile);
+			
+			$isException = true;
+		}
+		$this->assertTrue($isException);
+	}
 
 }

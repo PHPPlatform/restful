@@ -129,7 +129,7 @@ class Route {
 		if(!(array_key_exists("class", $route) && 
 			array_key_exists("method", $route) && 
 			method_exists($route["class"], $route["method"]))){
-				throw new InternalServerError("Resource at " . implode("/", $urlPaths) . " Not Found");
+				throw new InternalServerError("class and/or method does not exists for route at " . implode("/", $urlPaths));
 		}
 		$route["pathParams"] = $pathParams;
 		
