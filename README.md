@@ -125,3 +125,9 @@ web services for these url patterns will be configured as follows
     }
 }
 ```
+
+``NOTE :``
+ 
+``The parameters in the path are represented as * in the config , in the above example {id} is represented as *``
+ 
+``Name of the params does not map to the name of the service method arguments , but they map to the position``

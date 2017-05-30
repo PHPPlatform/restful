@@ -52,5 +52,12 @@ class TestRoute implements RESTService{
 		throw new BadInputException("Testing Uncaught Bad Input Exception in Service");
 	}
 	
+	/**
+	 * @Path /{param1}/path/{param2}
+	 * @GET
+	 */
+	function pathParams($request,$param1,$param2){
+		return new HTTPResponse(200,'OK',array("param1"=>$param1,"param2"=>$param2));
+	}
 	
 }
