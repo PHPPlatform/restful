@@ -28,7 +28,7 @@ class HTTPResponse{
 	 */
 	function setCode($code){
 		if(!(is_int($code) && 100 <= $code && $code <= 599)){
-			throw new BadInputException('Invalid code');
+			throw new BadInputException('Invalid Code');
 		}
 		$this->code = $code;
 		return $this;

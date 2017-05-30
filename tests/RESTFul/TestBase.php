@@ -47,6 +47,13 @@ abstract class TestBase extends \PHPUnit_Framework_TestCase {
 		}
 	}
 	
+	function clearErrorLog(){
+		$errorlogFile = self::$errorLogDir.'/'. $this->getName();
+		if(file_exists($errorlogFile)){
+			unlink($errorlogFile);
+		}
+	}
+	
 	static function tearDownAfterClass(){
 		// delete error log directory
 		rmdir(self::$errorLogDir);

@@ -24,6 +24,8 @@ if(defined('APP_COVERAGE') && APP_COVERAGE == "true"){
 	mkdir($coverageDir,0777,true);
 	chmod($coverageDir, 0777);
 	
+	define('COVERAGE_DIR', $coverageDir);
+	
 	$__indexFixture = str_replace('COVERAGE_DIR', "'$coverageDir'", $__indexFixture);
 	
 	$index = $__indexFixture.$index;
