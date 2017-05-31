@@ -9,7 +9,7 @@ use PhpPlatform\RESTFul\RESTService;
  * @Path /test/http-response
  *
  */
-class TESTHTTPResponse implements RESTService{
+class TestHTTPResponse implements RESTService{
 	
 	/**
 	 * @Path /header
