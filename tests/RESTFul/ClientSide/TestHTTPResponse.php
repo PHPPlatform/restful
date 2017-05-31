@@ -58,5 +58,28 @@ class TestHTTPResponse extends TestBase {
 		$this->assertTrue($isException);
 	}
 	
+	function testGetObject(){
+		MockSettings::setSettings("php-platform/restful", "routes.children.test.children.http-response.children.person.methods.GET", array("class"=>'PhpPlatform\Tests\RESTFul\Services\TestHTTPResponse',"method"=>"getPerson"));
+		MockSettings::setSettings("php-platform/restful", "routes.children.test.children.http-response.children.employee.methods.GET", array("class"=>'PhpPlatform\Tests\RESTFul\Services\TestHTTPResponse',"method"=>"getEmployee"));
+		MockSettings::setSettings("php-platform/restful", "serializers", array('PhpPlatform\Tests\RESTFul\Services\Models\Person'=>array('application/json'=>'PhpPlatform\Tests\RESTFul\Services\Models\PersonSerializer')));
+		
+		$client = new Client();
+		$request = $client->get(APP_DOMAIN.'/'.APP_PATH.'/test/http-response/person');
+		$response = $client->send($request);
+		
+		$this->assertEquals(200, $response->getStatusCode());
+		$this->assertEquals('{"firstName":"Raghavendra","lastName":"Raju","age":27}', $response->getBody(true));
+		
+		
+		$client = new Client();
+		$request = $client->get(APP_DOMAIN.'/'.APP_PATH.'/test/http-response/employee');
+		$response = $client->send($request);
+		
+		$this->assertEquals(200, $response->getStatusCode());
+		$this->assertEquals('{"empId":100,"firstName":"Raghavendra","lastName":"Raju","age":27}', $response->getBody(true));
+		
+		
+		
+	}
 
 }
