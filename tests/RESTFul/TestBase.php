@@ -54,6 +54,16 @@ abstract class TestBase extends \PHPUnit_Framework_TestCase {
 		}
 	}
 	
+	function assertContainsAndClearLog($message){
+		$errorlogFile= self::$errorLogDir.'/'. $this->getName();
+		$log = "";
+		if(file_exists($errorlogFile)){
+			$log = file_get_contents($errorlogFile);
+		}
+		$this->assertContains($message, $log);
+		unlink($errorlogFile);
+	}
+	
 	static function tearDownAfterClass(){
 		// delete error log directory
 		rmdir(self::$errorLogDir);

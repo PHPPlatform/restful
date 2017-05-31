@@ -6,7 +6,6 @@ use PhpPlatform\Mock\Config\MockSettings;
 use Guzzle\Http\Client;
 use PhpPlatform\Tests\RESTFul\TestBase;
 use Guzzle\Http\Exception\ServerErrorResponseException;
-use PhpPlatform\Config\Settings;
 use Guzzle\Http\Exception\ClientErrorResponseException;
 
 class TestRoute extends TestBase {
@@ -60,13 +59,7 @@ class TestRoute extends TestBase {
 			$this->assertEquals("", $response->getBody(true));
 			
 			// validate log
-			$logFile = Settings::getSettings('php-platform/errors','traces.Http');
-			$log = "";
-			if(file_exists($logFile)){
-				$log = file_get_contents($logFile);
-			}
-			$this->assertContains('PhpPlatform\Tests\RESTFul\Services\TestRouteNonService does not implement PhpPlatform\RESTFul\RESTService', $log);
-			unlink($logFile);
+			$this->assertContainsAndClearLog('PhpPlatform\Tests\RESTFul\Services\TestRouteNonService does not implement PhpPlatform\RESTFul\RESTService');
 			
 			$isException = true;
 		}
@@ -89,13 +82,7 @@ class TestRoute extends TestBase {
 			$this->assertEquals("", $response->getBody(true));
 			
 			// validate log
-			$logFile = Settings::getSettings('php-platform/errors','traces.Http');
-			$log = "";
-			if(file_exists($logFile)){
-				$log = file_get_contents($logFile);
-			}
-			$this->assertContains('Service method does not return instance of PhpPlatform\RESTFul\HTTPResponse', $log);
-			unlink($logFile);
+			$this->assertContainsAndClearLog('Service method does not return instance of PhpPlatform\RESTFul\HTTPResponse');
 			
 			$isException = true;
 		}
@@ -118,13 +105,7 @@ class TestRoute extends TestBase {
 			$this->assertEquals("", $response->getBody(true));
 			
 			// validate log
-			$logFile = Settings::getSettings('php-platform/errors','traces.Http');
-			$log = "";
-			if(file_exists($logFile)){
-				$log = file_get_contents($logFile);
-			}
-			$this->assertContains('Testing Uncaught Bad Input Exception in Service', $log);
-			unlink($logFile);
+			$this->assertContainsAndClearLog('Testing Uncaught Bad Input Exception in Service');
 			
 			$isException = true;
 		}
@@ -159,13 +140,7 @@ class TestRoute extends TestBase {
 			$this->assertEquals('', $response->getBody(true));
 			
 			// validate log
-			$logFile = Settings::getSettings('php-platform/errors','traces.Http');
-			$log = "";
-			if(file_exists($logFile)){
-				$log = file_get_contents($logFile);
-			}
-			$this->assertContains('Resource at test/route/myParam1/path/myParam2/non-existant-resource Not Found', $log);
-			unlink($logFile);
+			$this->assertContainsAndClearLog('Resource at test/route/myParam1/path/myParam2/non-existant-resource Not Found');
 			
 			$isException = true;
 		}
@@ -188,13 +163,7 @@ class TestRoute extends TestBase {
 			$this->assertEquals('', $response->getBody(true));
 			
 			// validate log
-			$logFile = Settings::getSettings('php-platform/errors','traces.Http');
-			$log = "";
-			if(file_exists($logFile)){
-				$log = file_get_contents($logFile);
-			}
-			$this->assertContains('Resource at test Not Found', $log);
-			unlink($logFile);
+			$this->assertContainsAndClearLog('Resource at test Not Found');
 			
 			$isException = true;
 		}
@@ -217,13 +186,7 @@ class TestRoute extends TestBase {
 			$this->assertEquals('', $response->getBody(true));
 			
 			// validate log
-			$logFile = Settings::getSettings('php-platform/errors','traces.Http');
-			$log = "";
-			if(file_exists($logFile)){
-				$log = file_get_contents($logFile);
-			}
-			$this->assertContains('POST method is not Allowed', $log);
-			unlink($logFile);
+			$this->assertContainsAndClearLog('POST method is not Allowed');
 			
 			$isException = true;
 		}
@@ -247,13 +210,7 @@ class TestRoute extends TestBase {
 			$this->assertEquals('', $response->getBody(true));
 			
 			// validate log
-			$logFile = Settings::getSettings('php-platform/errors','traces.Http');
-			$log = "";
-			if(file_exists($logFile)){
-				$log = file_get_contents($logFile);
-			}
-			$this->assertContains('class and/or method does not exists for route at test/route/class-not-exists', $log);
-			unlink($logFile);
+			$this->assertContainsAndClearLog('class and/or method does not exists for route at test/route/class-not-exists');
 			
 			$isException = true;
 		}
@@ -276,13 +233,7 @@ class TestRoute extends TestBase {
 			$this->assertEquals('', $response->getBody(true));
 			
 			// validate log
-			$logFile = Settings::getSettings('php-platform/errors','traces.Http');
-			$log = "";
-			if(file_exists($logFile)){
-				$log = file_get_contents($logFile);
-			}
-			$this->assertContains('class and/or method does not exists for route at test/route/method-not-exists', $log);
-			unlink($logFile);
+			$this->assertContainsAndClearLog('class and/or method does not exists for route at test/route/method-not-exists');
 			
 			$isException = true;
 		}
