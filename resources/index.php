@@ -1,5 +1,7 @@
 <?php
 
+ob_start();
+
 require_once dirname(__FILE__).'/vendor/autoload.php';
 
 PhpPlatform\Errors\ErrorHandler::handleError();
