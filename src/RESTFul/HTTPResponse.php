@@ -116,20 +116,19 @@ class HTTPResponse{
 					
 					foreach ($classAndInterfaces as $_className=>$_interfaces){
 						if(array_key_exists($_className, $serializers) && is_array($serializers[$_className])){
-							$contentTypeToSerializerMap = array_merge($serializers[$_className],$contentTypeToSerializerMap);
+							$contentTypeToSerializerMap = array_merge($contentTypeToSerializerMap,$serializers[$_className]);
 						}
 						foreach ($_interfaces as $_interface){
 							if(array_key_exists($_interface, $serializers) && is_array($serializers[$_interface])){
-								$contentTypeToSerializerMap = array_merge($serializers[$_interface],$contentTypeToSerializerMap);
+								$contentTypeToSerializerMap = array_merge($contentTypeToSerializerMap,$serializers[$_interface]);
 							}
 						}
 					}
 				}else{
 					if(array_key_exists($dataType, $serializers) && is_array($serializers[$dataType])){
-						$contentTypeToSerializerMap = array_merge($serializers[$dataType],$contentTypeToSerializerMap);
+						$contentTypeToSerializerMap = array_merge($contentTypeToSerializerMap,$serializers[$dataType]);
 					}
 				}
-				
 				$acceptPreferences = $this->getAcceptPreferenceTable($httpAccept);
 				$_serializer = $this->chooseSerializer($contentTypeToSerializerMap, $acceptPreferences);
 				
@@ -296,7 +295,10 @@ class HTTPResponse{
 		$isFirst = true;
 		foreach ($contentTypeToSerializer as $contentType=>$serializer){
 			$_contentTypeToSerializer[$contentType] = $serializer;
-			$_contentTypeToSerializer[preg_replace("/\/.*/","/*",$contentType)] = $serializer;
+			$contentTypeGeneric = preg_replace("/\/.*/","/*",$contentType);
+			if(!array_key_exists($contentTypeGeneric, $_contentTypeToSerializer)){
+				$_contentTypeToSerializer[$contentTypeGeneric] = $serializer;
+			}
 			if($isFirst){
 				$_contentTypeToSerializer["*/*"] = $serializer;
 				$isFirst = false;

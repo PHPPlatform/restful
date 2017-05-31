@@ -61,8 +61,11 @@ class TestHTTPResponse extends TestBase {
 	function testGetObject(){
 		MockSettings::setSettings("php-platform/restful", "routes.children.test.children.http-response.children.person.methods.GET", array("class"=>'PhpPlatform\Tests\RESTFul\Services\TestHTTPResponse',"method"=>"getPerson"));
 		MockSettings::setSettings("php-platform/restful", "routes.children.test.children.http-response.children.employee.methods.GET", array("class"=>'PhpPlatform\Tests\RESTFul\Services\TestHTTPResponse',"method"=>"getEmployee"));
-		MockSettings::setSettings("php-platform/restful", "serializers", array('PhpPlatform\Tests\RESTFul\Services\Models\Person'=>array('application/json'=>'PhpPlatform\Tests\RESTFul\Services\Models\PersonSerializer')));
 		
+		MockSettings::setSettings("php-platform/restful", "serializers", array('PhpPlatform\Tests\RESTFul\Services\Models\Person'=>array('application/json'=>'PhpPlatform\Tests\RESTFul\Services\Models\PersonSerializer')));
+		MockSettings::setSettings("php-platform/restful", "serializers", array('PhpPlatform\Tests\RESTFul\Services\Models\EmployeeInterface'=>array('application/xml'=>'PhpPlatform\Tests\RESTFul\Services\Models\EmployeeInterfaceSerializer')));
+		
+		// only available serializer
 		$client = new Client();
 		$request = $client->get(APP_DOMAIN.'/'.APP_PATH.'/test/http-response/person');
 		$response = $client->send($request);
@@ -70,15 +73,24 @@ class TestHTTPResponse extends TestBase {
 		$this->assertEquals(200, $response->getStatusCode());
 		$this->assertEquals('{"firstName":"Raghavendra","lastName":"Raju","age":27}', $response->getBody(true));
 		
-		
+		// 2 serializers available , preference given to accept
 		$client = new Client();
 		$request = $client->get(APP_DOMAIN.'/'.APP_PATH.'/test/http-response/employee');
+		$request->setHeader("Accept", "application/json,application/xml;q=0.8,*/*;q=0.5");
 		$response = $client->send($request);
 		
 		$this->assertEquals(200, $response->getStatusCode());
 		$this->assertEquals('{"empId":100,"firstName":"Raghavendra","lastName":"Raju","age":27}', $response->getBody(true));
 		
+		// 2 serializers available , preference is given to class hirarchy of the data
+		$client = new Client();
+		$request = $client->get(APP_DOMAIN.'/'.APP_PATH.'/test/http-response/employee');
+		$response = $client->send($request);
 		
+		$this->assertEquals(200, $response->getStatusCode());
+		$this->assertEquals('<?xml version="1.0"?>'."\n".
+                            '<employee empId="100" firstName="Raghavendra" lastName="Raju" age="27"/>'."\n", 
+				$response->getBody(true));
 		
 	}
 

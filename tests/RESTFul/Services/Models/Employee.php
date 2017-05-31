@@ -2,7 +2,7 @@
 
 namespace PhpPlatform\Tests\RESTFul\Services\Models;
 
-class Employee extends Person {
+class Employee extends Person implements EmployeeInterface{
 	private $empId;
 	
 	public function getEmpId() {
