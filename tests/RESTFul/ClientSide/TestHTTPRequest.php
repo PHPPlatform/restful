@@ -17,7 +17,7 @@ class TestHTTPRequest extends TestBase{
 		$response = $client->send($request);
 		
 		$this->assertEquals(200, $response->getStatusCode());
-		$this->assertEquals('{"method":"GET","protocol":"http","host":"localhost","appPath":"/php-platform/restful","uri":"/test/http-request/getters","queryParam_p1":"qv1","header_h1":"hv1"}', $response->getBody(true));
+		$this->assertEquals('{"method":"GET","protocol":"http","host":"localhost","appPath":"/'.APP_PATH.'","uri":"/test/http-request/getters","queryParam_p1":"qv1","header_h1":"hv1"}', $response->getBody(true));
 		
 	}
 	
