@@ -22,8 +22,6 @@ abstract class TestBase extends \PHPUnit_Framework_TestCase {
 		// clear caches
 		SettingsCache::getInstance()->reset();
 		
-		MockSettings::setSettings("php-platform/restful", "webroot", APP_PATH);
-		
 	}
 	
 	function setUp(){

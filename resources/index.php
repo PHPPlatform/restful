@@ -22,9 +22,18 @@ if (get_magic_quotes_gpc()) {
     unset($process);
 }
 
-
 $requestUri = $_REQUEST["__route__"];
-$_SERVER['REQUEST_URI'] == $requestUri;
+$requestUriActual = $_SERVER['REQUEST_URI'];
+$positionOfQueryString = strpos($requestUriActual, '?');
+if($positionOfQueryString !== false){
+	$requestUriActual = substr($requestUriActual, 0,$positionOfQueryString);
+}
+$appPathEnd = strpos($requestUriActual, $requestUri);
+if($appPathEnd !== false){
+	$appPath = substr($requestUriActual, 0, $appPathEnd);
+}
+$_SERVER['REQUEST_URI'] = $requestUri;
+$_SERVER['PLATFORM_APPLICATION_PATH'] = $appPath;
 PhpPlatform\RESTFul\Routing\Route::run($requestUri);
 
 ?>

@@ -74,25 +74,6 @@ class Route {
 			$uri = $_SERVER['REQUEST_URI'];
 		}
 		
-		$appPath = Settings::getSettings(Package::Name,"appPath");
-		
-		if(strpos($appPath,"/") !== 0){ // prepend / if needed
-			$appPath = "/".$appPath;
-		}
-		
-		if(strpos($uri,"/") !== 0){ // prepend / if needed
-			$uri = "/".$uri;
-		}
-		
-		if(strpos($uri,$appPath) !== 0){
-			throw new NotFound();
-		}else{ // real uri is after webroot
-			$uri = substr($uri,strlen($appPath));
-		}
-		
-		$_SERVER['REQUEST_URI'] = $uri;
-		$_SERVER['PLATFORM_APPLICATION_PATH'] = $appPath;
-		
 		$urlPaths = array_diff(explode("/",$uri),array(""));
 		
 		$route = Settings::getSettings(Package::Name,"routes");

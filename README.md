@@ -29,14 +29,6 @@ This package provides a platform for creating such RESTFul APIs in PHP
 
 This section explains the configuration for this package which can be configured using config.xml
 
-#### webroot
-This is the path where application is deployed relative to htdocs 
-``` 
-if application is deployed at demo , 
-the url looks like http://localhost/demo/myservice
-and 'demo' is the webroot
-```
-
 #### serializers
 Differrent type of data needs to be serialized in differrent formats based on the Accept Header in the request
 
