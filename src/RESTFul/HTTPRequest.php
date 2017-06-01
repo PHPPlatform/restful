@@ -38,6 +38,10 @@ class HTTPRequest {
 			$data = file_get_contents('php://input');
 			if(array_key_exists('Content-Type', $this->headers)){
 				$contentType = $this->headers['Content-Type'];
+				$positionOfSemiColonInContentType = strpos($contentType, ';');
+				if($positionOfSemiColonInContentType !== false){
+					$contentType = substr($contentType, 0, $positionOfSemiColonInContentType);
+				}
 				$internalContentType = $_SERVER['PLATFORM_SERVICE_CONSUMES'];
 				
 				$deserializer = Settings::getSettings(Package::Name,"deserializers.$contentType.$internalContentType");

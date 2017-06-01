@@ -34,6 +34,19 @@ class TestHTTPRequest implements RESTService{
 	}
 	
 	/**
+	 * @Path /text
+	 * @POST
+	 * @Consumes string
+	 */
+	function testText(HTTPRequest $request){
+		$inputString = $request->getData();
+		if(!is_string($inputString)){
+			throw new BadInputException("Input should be string");
+		}
+		return new HTTPResponse(200,'OK',$inputString);
+	}
+	
+	/**
 	 * @Path /json
 	 * @POST
 	 * @Consumes array
@@ -54,6 +67,56 @@ class TestHTTPRequest implements RESTService{
 			throw new BadInputException("Input is not an xml");
 		}
 		return new HTTPResponse(200,'OK',$inputXml);
+	}
+	
+	/**
+	 * @Path /form
+	 * @POST
+	 * @Consumes array
+	 */
+	function testForm(HTTPRequest $request){
+		$inputForm = $request->getData();
+		if(!is_array($inputForm)){
+			throw new BadInputException("Input is not an array");
+		}
+		return new HTTPResponse(200,'OK',$inputForm);
+	}
+	
+	/**
+	 * @Path /file
+	 * @POST
+	 * @Consumes array
+	 */
+	function testFile(HTTPRequest $request){
+		
+		$response = new HTTPResponse();
+		
+		$inputForm = $request->getData();
+		if(!is_array($inputForm)){
+			throw new BadInputException("Input is not an array");
+		}
+		$response->setData($inputForm);
+		
+		// file 1
+		$uploadedFileContent = file_get_contents($inputForm['files']['f1']['tmp_name']);
+		$actualFileContent = file_get_contents(dirname(__FILE__).'/../ClientSide/TestHTTPRequest.php');
+		if($uploadedFileContent != $actualFileContent){
+			throw new BadInputException("File 1 not uploaded correctly");
+		}
+		$response->setHeader('f1_tmp_name', $inputForm['files']['f1']['tmp_name']);
+		$response->setHeader('f1_size', $inputForm['files']['f1']['size']);
+		
+		
+		// file 2
+		$uploadedFileContent = file_get_contents($inputForm['files']['f2']['tmp_name']);
+		$actualFileContent = file_get_contents(dirname(__FILE__).'/../ClientSide/TestHTTPResponse.php');
+		if($uploadedFileContent != $actualFileContent){
+			throw new BadInputException("File 2 not uploaded correctly");
+		}
+		$response->setHeader('f2_tmp_name', $inputForm['files']['f2']['tmp_name']);
+		$response->setHeader('f2_size', $inputForm['files']['f2']['size']);
+		
+		return $response;
 	}
 	
 }

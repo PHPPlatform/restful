@@ -21,6 +21,18 @@ class TestHTTPRequest extends TestBase{
 		
 	}
 	
+	function testText(){
+		MockSettings::setSettings("php-platform/restful", "routes.children.test.children.http-request.children.text.methods.POST", array("class"=>'PhpPlatform\Tests\RESTFul\Services\TestHTTPRequest',"method"=>"testText"));
+		
+		$client = new Client();
+		$textContent = 'This is my Text';
+		$request = $client->post(APP_DOMAIN.'/'.APP_PATH.'/test/http-request/text',array("Content-Type"=>"text/plain","Content-Length"=>strlen($textContent)),$textContent);
+		$response = $client->send($request);
+		
+		$this->assertEquals(200, $response->getStatusCode());
+		$this->assertEquals($textContent, $response->getBody(true));
+	}
+	
 	function testJSON(){
 		MockSettings::setSettings("php-platform/restful", "routes.children.test.children.http-request.children.json.methods.POST", array("class"=>'PhpPlatform\Tests\RESTFul\Services\TestHTTPRequest',"method"=>"testJSON"));
 		
@@ -43,6 +55,37 @@ class TestHTTPRequest extends TestBase{
 		
 		$this->assertEquals(200, $response->getStatusCode());
 		$this->assertEquals('<?xml version="1.0"?>'."\n".$xmlContent."\n", $response->getBody(true));
+	}
+	
+	function testForm(){
+		MockSettings::setSettings("php-platform/restful", "routes.children.test.children.http-request.children.form.methods.POST", array("class"=>'PhpPlatform\Tests\RESTFul\Services\TestHTTPRequest',"method"=>"testForm"));
+		
+		$client = new Client();
+		$request = $client->post(APP_DOMAIN.'/'.APP_PATH.'/test/http-request/form',null,array("n1"=>"v1","n2"=>"v2"));
+		$response = $client->send($request);
+		
+		$this->assertEquals(200, $response->getStatusCode());
+		$this->assertEquals('{"n1":"v1","n2":"v2"}', $response->getBody(true));
+	}
+	
+	function testFile(){
+		MockSettings::setSettings("php-platform/restful", "routes.children.test.children.http-request.children.file.methods.POST", array("class"=>'PhpPlatform\Tests\RESTFul\Services\TestHTTPRequest',"method"=>"testFile"));
+		
+		$client = new Client();
+		$request = $client->post(APP_DOMAIN.'/'.APP_PATH.'/test/http-request/file',null,array("n1"=>"v1","n2"=>"v2","f1"=>"@".__FILE__,"f2"=>"@".dirname(__FILE__).'/TestHTTPResponse.php'));
+		$response = $client->send($request);
+		
+		$this->assertEquals(200, $response->getStatusCode());
+		
+		$f1_tmp_name = $response->getHeader('f1_tmp_name');
+		$f1_tmp_name = str_replace('\\', '\\\\', $f1_tmp_name);
+		$f1_size     = $response->getHeader('f1_size');
+		$f2_tmp_name = $response->getHeader('f2_tmp_name');
+		$f2_tmp_name = str_replace('\\', '\\\\', $f2_tmp_name);
+		$f2_size     = $response->getHeader('f2_size');
+		
+		$responseBody = '{"files":{"f1":{"name":"TestHTTPRequest.php","type":"text/x-php","tmp_name":"'.$f1_tmp_name.'","error":0,"size":'.$f1_size.'},"f2":{"name":"TestHTTPResponse.php","type":"text/x-php","tmp_name":"'.$f2_tmp_name.'","error":0,"size":'.$f2_size.'}},"data":{"n1":"v1","n2":"v2"}}';
+		$this->assertEquals($responseBody, $response->getBody(true));
 	}
 	
 }
