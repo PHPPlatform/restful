@@ -33,4 +33,16 @@ class TestHTTPRequest extends TestBase{
 		$this->assertEquals($jsonContent, $response->getBody(true));
 	}
 	
+	function testXML(){
+		MockSettings::setSettings("php-platform/restful", "routes.children.test.children.http-request.children.xml.methods.POST", array("class"=>'PhpPlatform\Tests\RESTFul\Services\TestHTTPRequest',"method"=>"testXML"));
+		
+		$client = new Client();
+		$xmlContent = '<person name="raaghu"><children><person name="shri"/><person name="di"/></children></person>';
+		$request = $client->post(APP_DOMAIN.'/'.APP_PATH.'/test/http-request/xml',array("Content-Type"=>"application/xml","Content-Length"=>strlen($xmlContent)),$xmlContent);
+		$response = $client->send($request);
+		
+		$this->assertEquals(200, $response->getStatusCode());
+		$this->assertEquals('<?xml version="1.0"?>'."\n".$xmlContent."\n", $response->getBody(true));
+	}
+	
 }

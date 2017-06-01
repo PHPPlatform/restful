@@ -5,6 +5,7 @@ namespace PhpPlatform\Tests\RESTFul\Services;
 use PhpPlatform\RESTFul\HTTPResponse;
 use PhpPlatform\RESTFul\RESTService;
 use PhpPlatform\RESTFul\HTTPRequest;
+use PhpPlatform\Errors\Exceptions\Application\BadInputException;
 
 /**
  * @Path /test/http-request
@@ -41,4 +42,18 @@ class TestHTTPRequest implements RESTService{
 		$inputArray = $request->getData();
 		return new HTTPResponse(200,'OK',$inputArray);
 	}
+	
+	/**
+	 * @Path /xml
+	 * @POST
+	 * @Consumes SimpleXMLElement
+	 */
+	function testXML(HTTPRequest $request){
+		$inputXml = $request->getData();
+		if(!($inputXml instanceof \SimpleXMLElement)){
+			throw new BadInputException("Input is not an xml");
+		}
+		return new HTTPResponse(200,'OK',$inputXml);
+	}
+	
 }
