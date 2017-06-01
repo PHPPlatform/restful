@@ -14,7 +14,7 @@ class ArrayToJsonSerialization implements Serialize, Deserialize {
 	 * @return string JSON String representaion of the data
 	 */
 	public static function serialize($data) {
-		return json_encode($data);
+		return json_encode($data,JSON_UNESCAPED_SLASHES);
 	}
 	
 	/**
