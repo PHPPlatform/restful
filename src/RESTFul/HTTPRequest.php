@@ -38,7 +38,7 @@ class HTTPRequest {
 			$data = file_get_contents('php://input');
 			if(array_key_exists('Content-Type', $this->headers)){
 				$contentType = $this->headers['Content-Type'];
-				$internalContentType = $_SERVER['PLATFORM_INTERNAL_CONTENT_TYPE'];
+				$internalContentType = $_SERVER['PLATFORM_SERVICE_CONSUMES'];
 				
 				$deserializer = Settings::getSettings(Package::Name,"deserializers.$contentType.$internalContentType");
 				
@@ -143,7 +143,7 @@ class HTTPRequest {
 	/**
 	 * Returns Data with this request
 	 * 
-	 * @return mixed the type of the return object depends on $_SERVER['PLATFORM_INTERNAL_CONTENT_TYPE']
+	 * @return mixed the type of the return object depends on $_SERVER['PLATFORM_SERVICE_CONSUMES']
 	 */
 	function getData(){
 		return $this->data;

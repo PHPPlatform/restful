@@ -10,6 +10,7 @@ use PhpPlatform\Errors\Exceptions\Http\HttpException;
 use PhpPlatform\RESTFul\HTTPRequest;
 use PhpPlatform\RESTFul\HTTPResponse;
 use PhpPlatform\RESTFul\Package;
+use PhpPlatform\Annotations\Annotation;
 
 class Route {
 	
@@ -28,6 +29,14 @@ class Route {
 			if(!in_array($RESTServiceInterfaceName,class_implements($class,true))){
 				throw new InternalServerError("$class does not implement $RESTServiceInterfaceName");
 			}
+			
+			$serviceClassAnnotations = Annotation::getAnnotations($class,null,null,$method);
+			$serviceMethodAnnotations = $serviceClassAnnotations["methods"][$method];
+			$consumes = null;
+			if(array_key_exists('Consumes', $serviceMethodAnnotations)){
+				$consumes = $serviceMethodAnnotations['Consumes'];
+			}
+			$_SERVER['PLATFORM_SERVICE_CONSUMES'] = $consumes;
 			
 			// initialize HTTPRequest
 			$httpRequest = HTTPRequest::getInstance();

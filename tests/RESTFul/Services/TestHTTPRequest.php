@@ -32,4 +32,13 @@ class TestHTTPRequest implements RESTService{
 		return $response;
 	}
 	
+	/**
+	 * @Path /json
+	 * @POST
+	 * @Consumes array
+	 */
+	function testJSON(HTTPRequest $request){
+		$inputArray = $request->getData();
+		return new HTTPResponse(200,'OK',$inputArray);
+	}
 }

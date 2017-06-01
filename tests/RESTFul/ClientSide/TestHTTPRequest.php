@@ -21,4 +21,16 @@ class TestHTTPRequest extends TestBase{
 		
 	}
 	
+	function testJSON(){
+		MockSettings::setSettings("php-platform/restful", "routes.children.test.children.http-request.children.json.methods.POST", array("class"=>'PhpPlatform\Tests\RESTFul\Services\TestHTTPRequest',"method"=>"testJSON"));
+		
+		$client = new Client();
+		$jsonContent = '{"name":"raaghu","children":[{"name":"shri"},{"name":"di"}]}';
+		$request = $client->post(APP_DOMAIN.'/'.APP_PATH.'/test/http-request/json',array("Content-Type"=>"application/json","Content-Length"=>strlen($jsonContent)),$jsonContent);
+		$response = $client->send($request);
+		
+		$this->assertEquals(200, $response->getStatusCode());
+		$this->assertEquals($jsonContent, $response->getBody(true));
+	}
+	
 }
