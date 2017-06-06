@@ -23,12 +23,28 @@ abstract class TestBase extends \PHPUnit_Framework_TestCase {
 		// clear caches
 		SettingsCache::getInstance()->reset();
 		
+		// build the routes - with coverage
+		if(defined('APP_COVERAGE') && APP_COVERAGE == "true"){
+			$filter = new \PHP_CodeCoverage_Filter();
+			$filter->addDirectoryToWhitelist(dirname(__FILE__).'/../../src');
+			
+			$coverage = new \PHP_CodeCoverage(null,$filter);
+			$coverage->start('testRESTful');
+		}
+		
 		Build::run();
 		
 		/**
 		 * @desc HACK : same file is used by SettingsCache , tests are run from root user and apache is run from www-data , causing permission issues to access this shared cache file
 		 */
-		chmod('/tmp/settingscache236512233125', 0777);
+		chmod(sys_get_temp_dir().'/settingscache236512233125', 0777);
+		
+		if(isset($coverage)){
+			$coverage->stop();
+			$writer = new \PHP_CodeCoverage_Report_PHP();
+			$coverageFileName = 'coverage_build.php';
+			$writer->process($coverage, COVERAGE_DIR.'/'.$coverageFileName);
+		}
 	}
 	
 	function setUp(){
