@@ -24,6 +24,11 @@ abstract class TestBase extends \PHPUnit_Framework_TestCase {
 		SettingsCache::getInstance()->reset();
 		
 		Build::run();
+		
+		/**
+		 * @desc HACK : same file is used by SettingsCache , tests are run from root user and apache is run from www-data , causing permission issues to access this shared cache file
+		 */
+		chmod('/tmp/settingscache236512233125', 0777);
 	}
 	
 	function setUp(){

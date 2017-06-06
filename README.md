@@ -25,6 +25,20 @@ This package provides a platform for creating such RESTFul APIs in PHP
 * configure routes as mentioned in the Configuration section below 
 * All service methods must return ``PhpPlatform\RESTFul\HTTPResponse``
 
+## Annotations
+
+#### @Path
+Can be applied on service class or method , this denotes url path to reach that service-method
+
+#### @GET @POST @PUT @HEAD @DELETE
+Can be applied only on service method , denotes what http verb this method is capable of serving.
+A service method can have more than on of these Annotations
+
+#### @Consumes
+Cab be applied only on service method, specifies the data type of the request body
+
+deserializers use this annnotation to deserialize the http request body into a php data. refer deserilizers section to configure multiple deserializers
+
 ## Configuration
 
 This section explains the configuration for this package which can be configured using config.xml
@@ -64,7 +78,7 @@ The PHP type to which the data should be converted needs to be specified at an a
 ``` PHP
 
 /**
- * @dataType array
+ * @Consumes array
  * @Path my-service
  */
 function myService(){}
@@ -72,8 +86,12 @@ function myService(){}
 ```
 
 #### routes
-routes is the static map of url pattern to service class and methods
-can be updated manually or generated from [php-platform/restful-build-routes](https://github.com/PHPPlatform/restful-build-routes) package.
+routes is the static map of url pattern to service class and methods.
+
+routes can be updated manually or generated based on the annotations by running
+```
+$ ./vendor/bin/build-restful
+```
 
 routes is organized as a tree , where each node contains the class and method name of the service available for that url path 
 
