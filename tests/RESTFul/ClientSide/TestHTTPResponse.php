@@ -11,8 +11,6 @@ use Guzzle\Http\Exception\ServerErrorResponseException;
 class TestHTTPResponse extends TestBase {
 
 	function testHeaders(){
-		MockSettings::setSettings("php-platform/restful", "routes.children.test.children.http-response.children.header.methods.GET", array("class"=>'PhpPlatform\Tests\RESTFul\Services\TestHTTPResponse',"method"=>"testHeaders"));
-		
 		$client = new Client();
 		$request = $client->get(APP_DOMAIN.'/'.APP_PATH.'/test/http-response/header');
 		$response = $client->send($request);
@@ -25,8 +23,6 @@ class TestHTTPResponse extends TestBase {
 	}
 	
 	function testBuffer(){
-		MockSettings::setSettings("php-platform/restful", "routes.children.test.children.http-response.children.buffer.methods.GET", array("class"=>'PhpPlatform\Tests\RESTFul\Services\TestHTTPResponse',"method"=>"testBufferClearing"));
-		
 		$client = new Client();
 		$request = $client->get(APP_DOMAIN.'/'.APP_PATH.'/test/http-response/buffer');
 		$response = $client->send($request);
@@ -36,8 +32,6 @@ class TestHTTPResponse extends TestBase {
 	}
 	
 	function testUnknownType(){
-		MockSettings::setSettings("php-platform/restful", "routes.children.test.children.http-response.children.unknown-type.methods.GET", array("class"=>'PhpPlatform\Tests\RESTFul\Services\TestHTTPResponse',"method"=>"testUnknownType"));
-		
 		$client = new Client();
 		$request = $client->get(APP_DOMAIN.'/'.APP_PATH.'/test/http-response/unknown-type');
 		
@@ -59,9 +53,6 @@ class TestHTTPResponse extends TestBase {
 	}
 	
 	function testGetObject(){
-		MockSettings::setSettings("php-platform/restful", "routes.children.test.children.http-response.children.person.methods.GET", array("class"=>'PhpPlatform\Tests\RESTFul\Services\TestHTTPResponse',"method"=>"getPerson"));
-		MockSettings::setSettings("php-platform/restful", "routes.children.test.children.http-response.children.employee.methods.GET", array("class"=>'PhpPlatform\Tests\RESTFul\Services\TestHTTPResponse',"method"=>"getEmployee"));
-		
 		MockSettings::setSettings("php-platform/restful", "serializers", array('PhpPlatform\Tests\RESTFul\Services\Models\Person'=>array('application/json'=>'PhpPlatform\Tests\RESTFul\Services\Models\PersonSerializer')));
 		MockSettings::setSettings("php-platform/restful", "serializers", array('PhpPlatform\Tests\RESTFul\Services\Models\EmployeeInterface'=>array('application/xml'=>'PhpPlatform\Tests\RESTFul\Services\Models\EmployeeInterfaceSerializer')));
 		

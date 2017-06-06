@@ -3,14 +3,11 @@
 namespace PhpPlatform\Tests\RESTFul\ClientSide;
 
 use PhpPlatform\Tests\RESTFul\TestBase;
-use PhpPlatform\Mock\Config\MockSettings;
 use Guzzle\Http\Client;
 
 class TestHTTPRequest extends TestBase{
 	
 	function testGetters(){
-		MockSettings::setSettings("php-platform/restful", "routes.children.test.children.http-request.children.getters.methods.GET", array("class"=>'PhpPlatform\Tests\RESTFul\Services\TestHTTPRequest',"method"=>"testGetters"));
-		
 		$client = new Client();
 		$request = $client->get(APP_DOMAIN.'/'.APP_PATH.'/test/http-request/getters?p1=qv1');
 		$request->addHeader("h1", "hv1");
@@ -18,12 +15,9 @@ class TestHTTPRequest extends TestBase{
 		
 		$this->assertEquals(200, $response->getStatusCode());
 		$this->assertEquals('{"method":"GET","protocol":"http","host":"localhost","appPath":"/'.APP_PATH.'","uri":"/test/http-request/getters","queryParam_p1":"qv1","header_h1":"hv1"}', $response->getBody(true));
-		
 	}
 	
 	function testText(){
-		MockSettings::setSettings("php-platform/restful", "routes.children.test.children.http-request.children.text.methods.POST", array("class"=>'PhpPlatform\Tests\RESTFul\Services\TestHTTPRequest',"method"=>"testText"));
-		
 		$client = new Client();
 		$textContent = 'This is my Text';
 		$request = $client->post(APP_DOMAIN.'/'.APP_PATH.'/test/http-request/text',array("Content-Type"=>"text/plain","Content-Length"=>strlen($textContent)),$textContent);
@@ -34,8 +28,6 @@ class TestHTTPRequest extends TestBase{
 	}
 	
 	function testJSON(){
-		MockSettings::setSettings("php-platform/restful", "routes.children.test.children.http-request.children.json.methods.POST", array("class"=>'PhpPlatform\Tests\RESTFul\Services\TestHTTPRequest',"method"=>"testJSON"));
-		
 		$client = new Client();
 		$jsonContent = '{"name":"raaghu","children":[{"name":"shri"},{"name":"di"}]}';
 		$request = $client->post(APP_DOMAIN.'/'.APP_PATH.'/test/http-request/json',array("Content-Type"=>"application/json","Content-Length"=>strlen($jsonContent)),$jsonContent);
@@ -46,8 +38,6 @@ class TestHTTPRequest extends TestBase{
 	}
 	
 	function testXML(){
-		MockSettings::setSettings("php-platform/restful", "routes.children.test.children.http-request.children.xml.methods.POST", array("class"=>'PhpPlatform\Tests\RESTFul\Services\TestHTTPRequest',"method"=>"testXML"));
-		
 		$client = new Client();
 		$xmlContent = '<person name="raaghu"><children><person name="shri"/><person name="di"/></children></person>';
 		$request = $client->post(APP_DOMAIN.'/'.APP_PATH.'/test/http-request/xml',array("Content-Type"=>"application/xml","Content-Length"=>strlen($xmlContent)),$xmlContent);
@@ -58,8 +48,6 @@ class TestHTTPRequest extends TestBase{
 	}
 	
 	function testForm(){
-		MockSettings::setSettings("php-platform/restful", "routes.children.test.children.http-request.children.form.methods.POST", array("class"=>'PhpPlatform\Tests\RESTFul\Services\TestHTTPRequest',"method"=>"testForm"));
-		
 		$client = new Client();
 		$request = $client->post(APP_DOMAIN.'/'.APP_PATH.'/test/http-request/form',null,array("n1"=>"v1","n2"=>"v2"));
 		$response = $client->send($request);
@@ -69,8 +57,6 @@ class TestHTTPRequest extends TestBase{
 	}
 	
 	function testFile(){
-		MockSettings::setSettings("php-platform/restful", "routes.children.test.children.http-request.children.file.methods.POST", array("class"=>'PhpPlatform\Tests\RESTFul\Services\TestHTTPRequest',"method"=>"testFile"));
-		
 		$client = new Client();
 		$request = $client->post(APP_DOMAIN.'/'.APP_PATH.'/test/http-request/file',null,array("n1"=>"v1","n2"=>"v2","f1"=>"@".__FILE__,"f2"=>"@".dirname(__FILE__).'/TestHTTPResponse.php'));
 		$response = $client->send($request);

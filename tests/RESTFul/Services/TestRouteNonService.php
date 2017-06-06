@@ -5,13 +5,13 @@ namespace PhpPlatform\Tests\RESTFul\Services;
 use PhpPlatform\RESTFul\HTTPResponse;
 
 /**
- * @Path /test/route/non-service
+ * @Path "/test/route/non-service"
  *
  */
 class TestRouteNonService {
 
 	/**
-	 * @Path /empty
+	 * @Path "/empty"
 	 * @GET
 	 */
 	function emptyTest(){

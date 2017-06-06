@@ -8,13 +8,13 @@ use PhpPlatform\RESTFul\HTTPRequest;
 use PhpPlatform\Errors\Exceptions\Application\BadInputException;
 
 /**
- * @Path /test/http-request
+ * @Path "/test/http-request"
  *
  */
 class TestHTTPRequest implements RESTService{
 	
 	/**
-	 * @Path /getters
+	 * @Path "/getters"
 	 * @GET
 	 */
 	function testGetters(HTTPRequest $request){
@@ -34,7 +34,7 @@ class TestHTTPRequest implements RESTService{
 	}
 	
 	/**
-	 * @Path /text
+	 * @Path "/text"
 	 * @POST
 	 * @Consumes string
 	 */
@@ -47,7 +47,7 @@ class TestHTTPRequest implements RESTService{
 	}
 	
 	/**
-	 * @Path /json
+	 * @Path "/json"
 	 * @POST
 	 * @Consumes array
 	 */
@@ -57,7 +57,7 @@ class TestHTTPRequest implements RESTService{
 	}
 	
 	/**
-	 * @Path /xml
+	 * @Path "/xml"
 	 * @POST
 	 * @Consumes SimpleXMLElement
 	 */
@@ -70,7 +70,7 @@ class TestHTTPRequest implements RESTService{
 	}
 	
 	/**
-	 * @Path /form
+	 * @Path "/form"
 	 * @POST
 	 * @Consumes array
 	 */
@@ -83,7 +83,7 @@ class TestHTTPRequest implements RESTService{
 	}
 	
 	/**
-	 * @Path /file
+	 * @Path "/file"
 	 * @POST
 	 * @Consumes array
 	 */

@@ -11,8 +11,6 @@ use Guzzle\Http\Exception\ClientErrorResponseException;
 class TestRoute extends TestBase {
 	
 	function testEmpty(){
-		MockSettings::setSettings("php-platform/restful", "routes.children.test.children.route.children.empty.methods.GET", array("class"=>'PhpPlatform\Tests\RESTFul\Services\TestRoute',"method"=>"emptyTest"));
-		
 		$client = new Client();
 		$request = $client->get(APP_DOMAIN.'/'.APP_PATH.'/test/route/empty');
 		$response = $client->send($request);
@@ -22,8 +20,6 @@ class TestRoute extends TestBase {
 	}
 	
 	function testSimple(){
-		MockSettings::setSettings("php-platform/restful", "routes.children.test.children.route.children.simple.methods.GET", array("class"=>'PhpPlatform\Tests\RESTFul\Services\TestRoute',"method"=>"simpleTest"));
-		
 		$client = new Client();
 		$request = $client->get(APP_DOMAIN.'/'.APP_PATH.'/test/route/simple');
 		$response = $client->send($request);
@@ -33,8 +29,6 @@ class TestRoute extends TestBase {
 	}
 	
 	function testGetJSON(){
-		MockSettings::setSettings("php-platform/restful", "routes.children.test.children.route.children.json.methods.GET", array("class"=>'PhpPlatform\Tests\RESTFul\Services\TestRoute',"method"=>"getJSON"));
-		
 		$client = new Client();
 		$request = $client->get(APP_DOMAIN.'/'.APP_PATH.'/test/route/json');
 		$response = $client->send($request);
@@ -67,8 +61,6 @@ class TestRoute extends TestBase {
 	}
 	
 	function testWrongResponceFromServiceMethod(){
-		MockSettings::setSettings("php-platform/restful", "routes.children.test.children.route.children.wrong-response.methods.GET", array("class"=>'PhpPlatform\Tests\RESTFul\Services\TestRoute',"method"=>"wrongResponse"));
-		
 		$client = new Client();
 		$request = $client->get(APP_DOMAIN.'/'.APP_PATH.'/test/route/wrong-response');
 		
@@ -90,8 +82,6 @@ class TestRoute extends TestBase {
 	}
 	
 	function testExceptionFromServiceMethod(){
-		MockSettings::setSettings("php-platform/restful", "routes.children.test.children.route.children.exception.methods.GET", array("class"=>'PhpPlatform\Tests\RESTFul\Services\TestRoute',"method"=>"exception"));
-		
 		$client = new Client();
 		$request = $client->get(APP_DOMAIN.'/'.APP_PATH.'/test/route/exception');
 		
@@ -113,8 +103,6 @@ class TestRoute extends TestBase {
 	}
 	
 	function testPathParams(){
-		MockSettings::setSettings("php-platform/restful", "routes.children.test.children.route.children.*.children.path.children.*.methods.GET", array("class"=>'PhpPlatform\Tests\RESTFul\Services\TestRoute',"method"=>"pathParams"));
-		
 		$client = new Client();
 		$request = $client->get(APP_DOMAIN.'/'.APP_PATH.'/test/route/myParam1/path/myParam2');
 		

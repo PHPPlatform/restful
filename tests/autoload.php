@@ -48,3 +48,12 @@ if(defined('APP_COVERAGE') && APP_COVERAGE == "true"){
 }
 
 file_put_contents($packageRootDir.'/index.php', $index);
+
+//config.json is rewritten during tests
+// so revert the config.json changes after the tests
+$tmpConfigfile = tempnam(sys_get_temp_dir(), "qgfd");
+copy($packageRootDir.'/config.json', $tmpConfigfile);
+
+register_shutdown_function(function() use($tmpConfigfile,$packageRootDir){
+	copy($tmpConfigfile, $packageRootDir.'/config.json');
+});

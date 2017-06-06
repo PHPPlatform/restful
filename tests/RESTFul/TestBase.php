@@ -4,6 +4,7 @@ namespace PhpPlatform\Tests\RESTFul;
 
 use PhpPlatform\Mock\Config\MockSettings;
 use PhpPlatform\Config\SettingsCache;
+use PhpPlatform\RESTFul\Routing\Build;
 
 abstract class TestBase extends \PHPUnit_Framework_TestCase {
 	
@@ -22,6 +23,7 @@ abstract class TestBase extends \PHPUnit_Framework_TestCase {
 		// clear caches
 		SettingsCache::getInstance()->reset();
 		
+		Build::run();
 	}
 	
 	function setUp(){

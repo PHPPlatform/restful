@@ -7,13 +7,13 @@ use PhpPlatform\RESTFul\HTTPResponse;
 use PhpPlatform\Errors\Exceptions\Application\BadInputException;
 
 /**
- * @Path /test/route
+ * @Path "/test/route"
  *
  */
 class TestRoute implements RESTService{
 	
 	/**
-	 * @Path /empty
+	 * @Path "/empty"
 	 * @GET
 	 */
 	function emptyTest(){
@@ -21,7 +21,7 @@ class TestRoute implements RESTService{
 	}
 	
 	/**
-	 * @Path /simple
+	 * @Path "/simple"
 	 * @GET
 	 */
 	function simpleTest(){
@@ -29,7 +29,7 @@ class TestRoute implements RESTService{
 	}
 	
 	/**
-	 * @Path /json
+	 * @Path "/json"
 	 * @GET
 	 */
 	function getJSON(){
@@ -37,7 +37,7 @@ class TestRoute implements RESTService{
 	}
 
 	/**
-	 * @Path /wrong-response
+	 * @Path "/wrong-response"
 	 * @GET
 	 */
 	function wrongResponse(){
@@ -45,7 +45,7 @@ class TestRoute implements RESTService{
 	}
 	
 	/**
-	 * @Path /exception
+	 * @Path "/exception"
 	 * @GET
 	 */
 	function exception(){
@@ -53,7 +53,7 @@ class TestRoute implements RESTService{
 	}
 	
 	/**
-	 * @Path /{param1}/path/{param2}
+	 * @Path "/{param1}/path/{param2}"
 	 * @GET
 	 */
 	function pathParams($request,$param1,$param2){

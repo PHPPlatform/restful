@@ -8,13 +8,13 @@ use PhpPlatform\Tests\RESTFul\Services\Models\Person;
 use PhpPlatform\Tests\RESTFul\Services\Models\Employee;
 
 /**
- * @Path /test/http-response
+ * @Path "/test/http-response"
  *
  */
 class TestHTTPResponse implements RESTService{
 	
 	/**
-	 * @Path /header
+	 * @Path "/header"
 	 * @GET
 	 */
 	function testHeaders(){
@@ -26,7 +26,7 @@ class TestHTTPResponse implements RESTService{
 	}
 	
 	/**
-	 * @Path /buffer
+	 * @Path "/buffer"
 	 * @GET
 	 */
 	function testBufferClearing(){
@@ -38,7 +38,7 @@ class TestHTTPResponse implements RESTService{
 	}
 	
 	/**
-	 * @Path /unknown-type
+	 * @Path "/unknown-type"
 	 * @GET
 	 */
 	function testUnknownType(){
@@ -49,7 +49,7 @@ class TestHTTPResponse implements RESTService{
 	}
 	
 	/**
-	 * @Path /person
+	 * @Path "/person"
 	 * @GET
 	 */
 	function getPerson(){
@@ -62,7 +62,7 @@ class TestHTTPResponse implements RESTService{
 	}
 	
 	/**
-	 * @Path /employee
+	 * @Path "/employee"
 	 * @GET
 	 */
 	function getEmployee(){
