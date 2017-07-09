@@ -29,5 +29,10 @@
     },
     "routes":{
 
-    }
+    },
+    "recaptcha":{
+	    "enable":false,
+	    "secret":"",
+	    "url":"https://www.google.com/recaptcha/api/siteverify"
+	}
 }

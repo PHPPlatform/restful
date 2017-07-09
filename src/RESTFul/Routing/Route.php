@@ -11,6 +11,7 @@ use PhpPlatform\RESTFul\HTTPRequest;
 use PhpPlatform\RESTFul\HTTPResponse;
 use PhpPlatform\RESTFul\Package;
 use PhpPlatform\Annotations\Annotation;
+use PhpPlatform\Errors\Exceptions\Http\_4XX\Unauthorized;
 
 class Route {
 	
@@ -32,6 +33,10 @@ class Route {
 			
 			$serviceClassAnnotations = Annotation::getAnnotations($class,null,null,$method);
 			$serviceMethodAnnotations = $serviceClassAnnotations["methods"][$method];
+			
+			// validate recaptcha
+			self::validateReCaptcha($serviceMethodAnnotations);
+			
 			$consumes = null;
 			if(array_key_exists('Consumes', $serviceMethodAnnotations)){
 				$consumes = $serviceMethodAnnotations['Consumes'];
@@ -126,5 +131,38 @@ class Route {
 		return $route;
 	}
 	
+	private static function validateReCaptcha($annotations){
+		if(array_key_exists('ReCaptcha', $annotations)){
+			$isReCaptchaEnabled = Settings::getSettings(Package::Name,"recaptcha.enable");
+			if($isReCaptchaEnabled){
+				// verify recaptcha
+				$siteVerifyUrl = Settings::getSettings(Package::Name,"recaptcha.url");
+				$siteSecret = Settings::getSettings(Package::Name,"recaptcha.secret");
+				
+				$ch = curl_init();
+				
+				curl_setopt($ch, CURLOPT_URL,$siteVerifyUrl);
+				curl_setopt($ch, CURLOPT_POST, 1);
+				curl_setopt($ch, CURLOPT_POSTFIELDS,
+						"secret=$siteSecret&response=".$_SERVER['HTTP_PHP_PLATFORM_RECAPTCHA_RESPONSE']);
+				
+				// receive server response ...
+				curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+				
+				$server_output = curl_exec ($ch);
+				
+				curl_close ($ch);
+				
+				$server_output = json_decode($server_output,true);
+				
+				if(!(is_array($server_output) && $server_output['success'] === true)){
+					// captcha not verified
+					// https://developers.google.com/recaptcha/docs/verify
+					throw new Unauthorized();
+				}
+				
+			}
+		}
+	}
 	
 }

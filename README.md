@@ -39,6 +39,13 @@ Cab be applied only on service method, specifies the data type of the request bo
 
 deserializers use this annnotation to deserialize the http request body into a php data. refer deserilizers section to configure multiple deserializers
 
+#### @ReCaptcha
+Enables service method to have recaptcha authenticated.
+Considered when `recaptcha.enable` configuration is set to `true`
+
+`` NOTE : ``
+service request should send the recaptcha response as http header **Php-Platform-Recaptcha-Response**
+
 ## Configuration
 
 This section explains the configuration for this package which can be configured using config.xml
@@ -141,3 +148,17 @@ web services for these url patterns will be configured as follows
 ``The parameters in the path are represented as * in the config , in the above example {id} is represented as *``
  
 ``Name of the params does not map to the name of the service method arguments , but they map to the position``
+
+#### recaptcha
+recaptcha configurations enable services to require reCaptcha authentication
+
+``` JSON
+"recaptcha":{
+    "enable":true,
+    "secret":""
+}
+```
+
+set `enable` to `true` to enable services to have recaptcha
+
+set the value of `secret` provided from google recaptcha 
