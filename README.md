@@ -162,3 +162,21 @@ recaptcha configurations enable services to require reCaptcha authentication
 set `enable` to `true` to enable services to have recaptcha
 
 set the value of `secret` provided from google recaptcha 
+
+#### CORS
+CORS configurations enables CORS (Cross Origin Resource Sharing) authentication
+
+``` JSON
+"CORS":{
+    "AllowedOrigins":[
+    ],
+    "AllowedMethods":[
+    ],
+    "AllowedHeaders":[
+    ],
+    "AllowCredentials":false,
+    "MaxAge":1000
+}
+```
+
+Details of these can be found in [https://developer.mozilla.org/en-US/docs/Web/HTTP/Access_control_CORS](https://developer.mozilla.org/en-US/docs/Web/HTTP/Access_control_CORS)

@@ -34,5 +34,15 @@
 	    "enable":false,
 	    "secret":"",
 	    "url":"https://www.google.com/recaptcha/api/siteverify"
+	},
+	"CORS":{
+	    "AllowedOrigins":[
+	    ],
+	    "AllowedMethods":[
+	    ],
+	    "AllowedHeaders":[
+	    ],
+	    "AllowCredentials":false,
+	    "MaxAge":1000
 	}
 }

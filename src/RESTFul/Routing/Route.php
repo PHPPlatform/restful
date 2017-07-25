@@ -12,12 +12,43 @@ use PhpPlatform\RESTFul\HTTPResponse;
 use PhpPlatform\RESTFul\Package;
 use PhpPlatform\Annotations\Annotation;
 use PhpPlatform\Errors\Exceptions\Http\_4XX\Unauthorized;
+use PhpPlatform\Errors\Exceptions\Http\_2XX\OK;
 
 class Route {
+	
+	private static $headers = array();
 	
 	static function run($uri = null){
 		
 		try{
+			//cors authentication
+			if(array_key_exists('HTTP_ORIGIN', $_SERVER)){
+				$origin = $_SERVER['HTTP_ORIGIN'];
+			}elseif(array_key_exists('HTTP_REFERER', $_SERVER)){
+				$origin = $_SERVER['HTTP_REFERER'];
+			}
+			if(isset($origin)){
+				$origin = trim($origin,'/');
+				$requestDomain = "http".(isset($_SERVER['HTTPS'])?"s":"")."://".$_SERVER['HTTP_HOST'].($_SERVER['SERVER_PORT'] == 80 ?"":":".$_SERVER['SERVER_PORT']);
+				if(strtolower($origin) != strtolower($requestDomain)){
+					$allowedOrigins = Settings::getSettings(Package::Name,'CORS.AllowedOrigins');
+					if(in_array($origin, $allowedOrigins)){
+						self::$headers['Access-Control-Allow-Origin'] = $origin;
+						self::$headers['Access-Control-Allow-Methods'] = implode(", ", Settings::getSettings(Package::Name,'CORS.AllowedMethods'));
+						self::$headers['Access-Control-Allow-Headers'] = implode(", ", Settings::getSettings(Package::Name,'CORS.AllowedHeaders'));
+						
+						$allowCredentails = Settings::getSettings(Package::Name,'CORS.AllowCredentials');
+						if(is_bool($allowCredentails)){
+							$allowCredentails = $allowCredentails ? 'true':'false';
+						}
+						self::$headers['Access-Control-Allow-Credentials'] = $allowCredentails;
+						self::$headers['Access-Control-Max-Age'] = Settings::getSettings(Package::Name,'CORS.MaxAge');
+					}else{
+						throw new Unauthorized("CORS ERROR : $origin is not a allowed origin");
+					}					
+				}
+			}
+			
 			// find route
 			$route = self::findRoute($uri);
 			
@@ -54,6 +85,9 @@ class Route {
 			$httpResponse = $routeMethodReflection->invokeArgs($routeInstance, array_merge(array($httpRequest),$pathParams));
 			
 			if($httpResponse instanceof HTTPResponse){
+				foreach (self::$headers as $name=>$value){
+					$httpResponse->setHeader($name, $value);
+				}
 				// flush HTTPResponse
 				$httpResponse->flush($httpRequest->getHeader('Accept'));
 			}else{
@@ -65,12 +99,15 @@ class Route {
 			if($h instanceof InternalServerError){
 				$message = "Internal Server Error";
 			}
-			(new HTTPResponse($h->getCode(),$message))->flush();
+			$httpResponse = new HTTPResponse($h->getCode(),$message);
 		}catch (\Exception $e){
 			new InternalServerError($e->getMessage()); // for logging purposes
-			(new HTTPResponse(500,'Internal Server Error'))->flush();
+			$httpResponse = new HTTPResponse(500,'Internal Server Error');
 		}
-				
+		foreach (self::$headers as $name=>$value){
+			$httpResponse->setHeader($name, $value);
+		}
+		$httpResponse->flush();
 	}
 	
 	/**
@@ -115,7 +152,17 @@ class Route {
 		}
 		
 		if(!isset($route[$method])){
-			throw new MethodNotAllowed("$method method is not Allowed");
+			if($method == "OPTIONS"){
+				// for OPTIONS return OK , if Access-Control-Request-Method is found in $route configurations
+				$_method = $_SERVER['HTTP_ACCESS_CONTROL_REQUEST_METHOD'];
+				if(array_key_exists($_method, $route)){
+					throw new OK();
+				}else{
+					throw new MethodNotAllowed("CORS ERROR, $_method is not Allowed");
+				}
+			}else{
+				throw new MethodNotAllowed("$method method is not Allowed");
+			}
 		}
 		
 		$route = $route[$method];
