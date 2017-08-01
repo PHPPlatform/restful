@@ -168,11 +168,11 @@ CORS configurations enables CORS (Cross Origin Resource Sharing) authentication
 
 ``` JSON
 "CORS":{
-    "AllowedOrigins":[
+    "AllowOrigins":[
     ],
-    "AllowedMethods":[
+    "AllowMethods":[
     ],
-    "AllowedHeaders":[
+    "AllowHeaders":[
     ],
     "AllowCredentials":false,
     "MaxAge":1000
@@ -180,3 +180,24 @@ CORS configurations enables CORS (Cross Origin Resource Sharing) authentication
 ```
 
 Details of these can be found in [https://developer.mozilla.org/en-US/docs/Web/HTTP/Access_control_CORS](https://developer.mozilla.org/en-US/docs/Web/HTTP/Access_control_CORS)
+
+##### Access-Control-* Headers 
+
+  * **Access-Control-Allow-Origin**
+  This header is set to `origin` header in the request only if that `origin` is listed in `CORS.AllowOrigins` configuration
+  
+  * **Access-Control-Allow-Methods**
+  Comma seperated Methods configured in `CORS.AllowMethods`
+  
+  * **Access-Control-Allow-Headers**
+  Comma seperated Headers configured in `CORS.AllowHeaders`
+  
+  * **Access-Control-Allow-Credentials**
+  True/False configured in `CORS.AllowCredentials`
+  
+  * **Access-Control-Max-Age**
+  number of seconds configured in `CORS.MaxAge`
+  
+  * **Access-Control-Exposed-Headers**
+  Comma separated names of headers explicitely set in HTTPResponse object from the service
+  

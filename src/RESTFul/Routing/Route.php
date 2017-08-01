@@ -12,42 +12,12 @@ use PhpPlatform\RESTFul\HTTPResponse;
 use PhpPlatform\RESTFul\Package;
 use PhpPlatform\Annotations\Annotation;
 use PhpPlatform\Errors\Exceptions\Http\_4XX\Unauthorized;
-use PhpPlatform\Errors\Exceptions\Http\_2XX\OK;
 
 class Route {
-	
-	private static $headers = array();
 	
 	static function run($uri = null){
 		
 		try{
-			//cors authentication
-			if(array_key_exists('HTTP_ORIGIN', $_SERVER)){
-				$origin = $_SERVER['HTTP_ORIGIN'];
-			}elseif(array_key_exists('HTTP_REFERER', $_SERVER)){
-				$origin = $_SERVER['HTTP_REFERER'];
-			}
-			if(isset($origin)){
-				$origin = trim($origin,'/');
-				$requestDomain = "http".(isset($_SERVER['HTTPS'])?"s":"")."://".$_SERVER['HTTP_HOST'].($_SERVER['SERVER_PORT'] == 80 ?"":":".$_SERVER['SERVER_PORT']);
-				if(strtolower($origin) != strtolower($requestDomain)){
-					$allowedOrigins = Settings::getSettings(Package::Name,'CORS.AllowedOrigins');
-					if(in_array($origin, $allowedOrigins)){
-						self::$headers['Access-Control-Allow-Origin'] = $origin;
-						self::$headers['Access-Control-Allow-Methods'] = implode(", ", Settings::getSettings(Package::Name,'CORS.AllowedMethods'));
-						self::$headers['Access-Control-Allow-Headers'] = implode(", ", Settings::getSettings(Package::Name,'CORS.AllowedHeaders'));
-						
-						$allowCredentails = Settings::getSettings(Package::Name,'CORS.AllowCredentials');
-						if(is_bool($allowCredentails)){
-							$allowCredentails = $allowCredentails ? 'true':'false';
-						}
-						self::$headers['Access-Control-Allow-Credentials'] = $allowCredentails;
-						self::$headers['Access-Control-Max-Age'] = Settings::getSettings(Package::Name,'CORS.MaxAge');
-					}else{
-						throw new Unauthorized("CORS ERROR : $origin is not a allowed origin");
-					}					
-				}
-			}
 			
 			// find route
 			$route = self::findRoute($uri);
@@ -55,6 +25,23 @@ class Route {
 			$class = $route["class"];
 			$method = $route["method"];
 			$pathParams = $route['pathParams'];
+			$corsAccessControl = $route['corsAccessControl'];
+			
+			//CORS authentication
+			if(array_key_exists('HTTP_ORIGIN', $_SERVER)){
+				$origin = $_SERVER['HTTP_ORIGIN'];
+			}
+			if(isset($origin)){ // origin header is set
+				$origin = trim($origin,'/');
+				$requestDomain = "http".(isset($_SERVER['HTTPS'])?"s":"")."://".$_SERVER['HTTP_HOST'].($_SERVER['SERVER_PORT'] == 80 ?"":":".$_SERVER['SERVER_PORT']);
+				if(strtolower($origin) != strtolower($requestDomain)){ // origin is not same as the requested resource
+					if(in_array($origin, $corsAccessControl['AllowOrigins'])){ // origin is allowed
+						$corsAccessControl['AllowOrigin'] = $origin;
+					}else{ // origin is not allowed
+						throw new Unauthorized("CORS ERROR : $origin is not a allowed origin");
+					}
+				}
+			}
 			
 			$RESTServiceInterfaceName = 'PhpPlatform\RESTFul\RESTService';
 			
@@ -85,9 +72,7 @@ class Route {
 			$httpResponse = $routeMethodReflection->invokeArgs($routeInstance, array_merge(array($httpRequest),$pathParams));
 			
 			if($httpResponse instanceof HTTPResponse){
-				foreach (self::$headers as $name=>$value){
-					$httpResponse->setHeader($name, $value);
-				}
+				self::addCorsHeaders($httpResponse, $corsAccessControl);
 				// flush HTTPResponse
 				$httpResponse->flush($httpRequest->getHeader('Accept'));
 			}else{
@@ -104,20 +89,18 @@ class Route {
 			new InternalServerError($e->getMessage()); // for logging purposes
 			$httpResponse = new HTTPResponse(500,'Internal Server Error');
 		}
-		foreach (self::$headers as $name=>$value){
-			$httpResponse->setHeader($name, $value);
-		}
+		self::addCorsHeaders($httpResponse, $corsAccessControl);
 		$httpResponse->flush();
 	}
 	
 	/**
-	 * This method finds the Service Class and Method for the given $uri 
-	 * 
+	 * This method finds the Service Class and Method for the given $uri
+	 *
 	 * @param string $uri , if null or not specified the defaulr value in $_SERVER['REQUEST_URI'] will be considered
 	 * @throws NotFound
 	 * @throws MethodNotAllowed
 	 * @throws InternalServerError
-	 * @return array of containing class, method and pathParams 
+	 * @return array of containing class, method, pathParams and corsAcessControl Parameters
 	 */
 	private static function findRoute($uri = null){
 		$method = $_SERVER['REQUEST_METHOD'];
@@ -129,10 +112,17 @@ class Route {
 		
 		$route = Settings::getSettings(Package::Name,"routes");
 		
+		// global cors headers
+		$corsAccessControl = Settings::getSettings(Package::Name,"CORS");
+		
 		$pathParams = array();
 		foreach($urlPaths as $urlPath){
 			if(!isset($route["children"])){
 				$route["children"] = array();
+			}
+			
+			if(array_key_exists("CORS",$route)){
+				$corsAccessControl = self::mergeCorsHeaders($corsAccessControl,$route["CORS"]);
 			}
 			
 			if(array_key_exists(urlencode($urlPath),$route["children"])){
@@ -152,30 +142,115 @@ class Route {
 		}
 		
 		if(!isset($route[$method])){
+			$validMethod = false;
 			if($method == "OPTIONS"){
 				// for OPTIONS return OK , if Access-Control-Request-Method is found in $route configurations
 				$_method = $_SERVER['HTTP_ACCESS_CONTROL_REQUEST_METHOD'];
 				if(array_key_exists($_method, $route)){
-					throw new OK();
-				}else{
-					throw new MethodNotAllowed("CORS ERROR, $_method is not Allowed");
+					// copy cors headers from original method
+					$route[$method] = array(
+							"class"=>'PhpPlatform\RESTFul\CORS\PreFlight',
+							"method"=>'preFlight'
+					);
+					if(isset($route[$_method]["CORS"])){
+						$route[$method]['CORS'] = $route[$_method]["CORS"];
+					}
+					$validMethod = true;
 				}
-			}else{
+			}
+			if(!$validMethod){
 				throw new MethodNotAllowed("$method method is not Allowed");
 			}
 		}
 		
 		$route = $route[$method];
+		if(array_key_exists("CORS",$route)){
+			$corsAccessControl = self::mergeCorsHeaders($corsAccessControl,$route["CORS"]);
+		}
 		
 		// check for existenace of the class and method
-		if(!(array_key_exists("class", $route) && 
-			array_key_exists("method", $route) && 
-			method_exists($route["class"], $route["method"]))){
-				throw new InternalServerError("class and/or method does not exists for route at " . implode("/", $urlPaths));
+		if(!(array_key_exists("class", $route) &&
+				array_key_exists("method", $route) &&
+				method_exists($route["class"], $route["method"]))){
+					throw new InternalServerError("class and/or method does not exists for route at " . implode("/", $urlPaths));
 		}
 		$route["pathParams"] = $pathParams;
+		$route["corsAccessControl"] = $corsAccessControl;
 		
 		return $route;
+	}
+	
+	private static function mergeCorsHeaders($headers1,$headers2){
+		
+		foreach (array('AllowOrigins','AllowMethods','AllowHeaders') as $headerName){
+			if(array_key_exists($headerName, $headers2) && is_array($headers2[$headerName])){
+				if(!array_key_exists($headerName,$headers1)){
+					$headers1[$headerName] = array();
+				}
+				foreach ($headers2[$headerName] as $origin){
+					if(strpos($origin, "!") === 0){
+						$index = array_search(substr($origin, 1), $headers1[$headerName]);
+						if($index !== false){
+							unset($headers1[$headerName][$index]);
+						}
+					}else if(!in_array($origin, $headers1[$headerName])){
+						$headers1[$headerName][] = $origin;
+					}
+				}
+			}
+		}
+		
+		if(array_key_exists('AllowCredentials', $headers2)){
+			$headers1['AllowCredentials'] = $headers2['AllowCredentials'];
+		}
+		if(array_key_exists('MaxAge', $headers2)){
+			$headers1['MaxAge'] = $headers2['MaxAge'];
+		}
+		return $headers1;
+		
+	}
+	
+	/**
+	 *
+	 * @param HTTPResponse $httpResponse
+	 * @param array $corsAccessControl
+	 */
+	private static function addCorsHeaders($httpResponse,$corsAccessControl = null){
+		
+		if($httpResponse instanceof HTTPResponse && is_array($corsAccessControl) && isset($corsAccessControl['AllowOrigin'])){
+			// find existing headers to set them as Access-Control-Expose-Headers
+			$existingHeadersRP = new \ReflectionProperty(get_class($httpResponse), 'headers');
+			$existingHeadersRP->setAccessible(true);
+			$existingHeaders = $existingHeadersRP->getValue($httpResponse);
+			
+			$existingHeaderNames = array_keys($existingHeaders);
+			
+			// Access-Control-Allow-Origin
+			$httpResponse->setHeader('Access-Control-Allow-Origin',      $corsAccessControl['AllowOrigin']);
+			
+			// Access-Control-Allow-Credentials
+			if(is_bool($corsAccessControl['AllowCredentials'])){
+				$corsAccessControl['AllowCredentials'] = $corsAccessControl['AllowCredentials']?'true':'false';
+			}
+			$httpResponse->setHeader('Access-Control-Allow-Credentials', $corsAccessControl['AllowCredentials']);
+			
+			// Access-Control-Max-Age
+			$httpResponse->setHeader('Access-Control-Max-Age',           $corsAccessControl['MaxAge']);
+			
+			// Access-Control-Allow-Headers
+			if(is_array($corsAccessControl['AllowHeaders'])){
+				$httpResponse->setHeader('Access-Control-Allow-Headers',     implode(", ",array_unique($corsAccessControl['AllowHeaders'])));
+			}
+			
+			// Access-Control-Allow-Methods
+			if(is_array($corsAccessControl['AllowMethods'])){
+				$httpResponse->setHeader('Access-Control-Allow-Methods',     implode(", ",array_unique($corsAccessControl['AllowMethods'])));
+			}
+			
+			// Access-Control-Expose-Headers
+			$httpResponse->setHeader('Access-Control-Expose-Headers',    implode(", ",$existingHeaderNames));
+		}
+		
 	}
 	
 	private static function validateReCaptcha($annotations){

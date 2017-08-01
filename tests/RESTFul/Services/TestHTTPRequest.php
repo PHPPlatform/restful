@@ -53,7 +53,12 @@ class TestHTTPRequest implements RESTService{
 	 */
 	function testJSON(HTTPRequest $request){
 		$inputArray = $request->getData();
-		return new HTTPResponse(200,'OK',$inputArray);
+        $response = new HTTPResponse(200,'OK',$inputArray);
+
+        $response->setHeader('Customer-Headers-For-CORS', 'test1');
+        $response->setHeader('location', 'http://test/normal/header/with/cors');
+
+        return $response;
 	}
 	
 	/**

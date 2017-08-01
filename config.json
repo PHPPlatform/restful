@@ -1,48 +1,45 @@
 {
-    "serializers":{
-        "string":{
-            "text/plain":"PhpPlatform\\RESTFul\\Serialization\\StringToPlainTextSerialization"
+    "serializers": {
+        "string": {
+            "text/plain": "PhpPlatform\\RESTFul\\Serialization\\StringToPlainTextSerialization"
         },
-        "array":{
-            "application/json":"PhpPlatform\\RESTFul\\Serialization\\ArrayToJsonSerialization"
+        "array": {
+            "application/json": "PhpPlatform\\RESTFul\\Serialization\\ArrayToJsonSerialization"
         },
-        "SimpleXMLElement":{
-            "application/xml":"PhpPlatform\\RESTFul\\Serialization\\SimpleXMLElementToXmlSerialization"
+        "SimpleXMLElement": {
+            "application/xml": "PhpPlatform\\RESTFul\\Serialization\\SimpleXMLElementToXmlSerialization"
         }
     },
-    "deserializers":{
-        "application/json":{
-            "array":"PhpPlatform\\RESTFul\\Serialization\\ArrayToJsonSerialization"
+    "deserializers": {
+        "application/json": {
+            "array": "PhpPlatform\\RESTFul\\Serialization\\ArrayToJsonSerialization"
         },
-        "application/xml":{
-            "SimpleXMLElement":"PhpPlatform\\RESTFul\\Serialization\\SimpleXMLElementToXmlSerialization"
+        "application/xml": {
+            "SimpleXMLElement": "PhpPlatform\\RESTFul\\Serialization\\SimpleXMLElementToXmlSerialization"
         },
-        "multipart/form-data":{
-            "array":"PhpPlatform\\RESTFul\\Serialization\\MultiPartFormToArrayDeserialization"
+        "multipart/form-data": {
+            "array": "PhpPlatform\\RESTFul\\Serialization\\MultiPartFormToArrayDeserialization"
         },
-        "application/x-www-form-urlencoded":{
-            "array":"PhpPlatform\\RESTFul\\Serialization\\FormToArrayDeserialization"
+        "application/x-www-form-urlencoded": {
+            "array": "PhpPlatform\\RESTFul\\Serialization\\FormToArrayDeserialization"
         },
-        "text/plain":{
-            "string":"PhpPlatform\\RESTFul\\Serialization\\StringToPlainTextSerialization"
+        "text/plain": {
+            "string": "PhpPlatform\\RESTFul\\Serialization\\StringToPlainTextSerialization"
         }
     },
-    "routes":{
-
+    "routes": {
+        
     },
-    "recaptcha":{
-	    "enable":false,
-	    "secret":"",
-	    "url":"https://www.google.com/recaptcha/api/siteverify"
-	},
-	"CORS":{
-	    "AllowedOrigins":[
-	    ],
-	    "AllowedMethods":[
-	    ],
-	    "AllowedHeaders":[
-	    ],
-	    "AllowCredentials":false,
-	    "MaxAge":1000
-	}
+    "recaptcha": {
+        "enable": false,
+        "secret": "",
+        "url": "https://www.google.com/recaptcha/api/siteverify"
+    },
+    "CORS": {
+        "AllowOrigins": [],
+        "AllowMethods": [],
+        "AllowHeaders": [],
+        "AllowCredentials": false,
+        "MaxAge": 1000
+    }
 }

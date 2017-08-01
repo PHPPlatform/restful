@@ -83,12 +83,13 @@ class HTTPResponse{
 	 */
 	function flush($httpAccept = null){
 		try{
-			// set reponse code and message
-			header($_SERVER['SERVER_PROTOCOL']." ".$this->code." ".$this->message);
-			
+			// set headers
 			foreach ($this->headers as $name=>$value){
 				header("$name:$value");
 			}
+			
+			// set reponse code and message
+			header($_SERVER['SERVER_PROTOCOL']." ".$this->code." ".$this->message);
 			
 			// clear buffer , if any
 			if(ob_get_length() !== false){

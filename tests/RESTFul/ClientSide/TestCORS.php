@@ -12,9 +12,9 @@ class TestCORS extends TestBase {
 	
 	function testForNoCORSHeadersForSameOrigin(){
 		MockSettings::setSettings(Package::Name, 'CORS', array(
-				"AllowedOrigins"=>array('http://example.com'),
-				"AllowedMethods"=>array('GET'),
-				"AllowedHeaders"=>array(),
+				"AllowOrigins"=>array('http://example.com'),
+				"AllowMethods"=>array('GET'),
+				"AllowHeaders"=>array(),
 				"AllowCredentials"=>false,
 				"MaxAge"=>1000
 		));
@@ -45,9 +45,9 @@ class TestCORS extends TestBase {
 	
 	function testNotAllowedOrigin(){
 		MockSettings::setSettings(Package::Name, 'CORS', array(
-				"AllowedOrigins"=>array('http://example.com'),
-				"AllowedMethods"=>array('GET'),
-				"AllowedHeaders"=>array(),
+				"AllowOrigins"=>array('http://example.com'),
+				"AllowMethods"=>array('GET'),
+				"AllowHeaders"=>array(),
 				"AllowCredentials"=>false,
 				"MaxAge"=>1000
 		));
@@ -73,9 +73,9 @@ class TestCORS extends TestBase {
 	
 	function testAllowedOrigin(){
 		MockSettings::setSettings(Package::Name, 'CORS', array(
-				"AllowedOrigins"=>array('http://example.com'),
-				"AllowedMethods"=>array('GET'),
-				"AllowedHeaders"=>array(),
+				"AllowOrigins"=>array('http://example.com'),
+				"AllowMethods"=>array('GET'),
+				"AllowHeaders"=>array(),
 				"AllowCredentials"=>false,
 				"MaxAge"=>1000
 		));
@@ -92,6 +92,7 @@ class TestCORS extends TestBase {
 		$this->assertEquals('',$response->getHeader('Access-Control-Allow-Headers'));
 		$this->assertEquals('false',$response->getHeader('Access-Control-Allow-Credentials'));
 		$this->assertEquals('1000',$response->getHeader('Access-Control-Max-Age'));
+		$this->assertEquals('',$response->getHeader('Access-Control-Expose-Headers'));
 		
 		// not allowed method
 		$jsonContent = '{"name":"raaghu","children":[{"name":"shri"},{"name":"di"}]}';
@@ -104,6 +105,7 @@ class TestCORS extends TestBase {
 		$this->assertEquals('',$response->getHeader('Access-Control-Allow-Headers'));
 		$this->assertEquals('false',$response->getHeader('Access-Control-Allow-Credentials'));
 		$this->assertEquals('1000',$response->getHeader('Access-Control-Max-Age'));
+		$this->assertEquals('Customer-Headers-For-CORS, location',$response->getHeader('Access-Control-Expose-Headers'));
 		
 		// for OPTIONS method (preflight request)
 		$request = $client->options(APP_DOMAIN.'/'.APP_PATH.'/test/http-request/json');
@@ -111,20 +113,19 @@ class TestCORS extends TestBase {
 		$request->setHeader('Access-Control-Request-Method', "POST");
 		$response = $client->send($request);
 		
-		$this->assertContainsAndClearLog('[/test/http-request/json] OK : PhpPlatform\Errors\Exceptions\Http\_2XX\OK');
-		
 		$this->assertEquals('http://example.com',$response->getHeader('Access-Control-Allow-Origin'));
 		$this->assertEquals('GET',$response->getHeader('Access-Control-Allow-Methods'));
 		$this->assertEquals('',$response->getHeader('Access-Control-Allow-Headers'));
 		$this->assertEquals('false',$response->getHeader('Access-Control-Allow-Credentials'));
 		$this->assertEquals('1000',$response->getHeader('Access-Control-Max-Age'));
+		$this->assertEquals('',$response->getHeader('Access-Control-Expose-Headers'));
 		
 		
 		// with allowed headers , credentials and differrent max-age 
 		MockSettings::setSettings(Package::Name, 'CORS', array(
-				"AllowedOrigins"=>array('http://example.com'),
-				"AllowedMethods"=>array('GET','POST'),
-				"AllowedHeaders"=>array('Content-Type','Php-Platform-Session-Cookie','Accept'),
+				"AllowOrigins"=>array('http://example.com'),
+				"AllowMethods"=>array('GET','POST'),
+				"AllowHeaders"=>array('Content-Type','Php-Platform-Session-Cookie','Accept'),
 				"AllowCredentials"=>'true',
 				"MaxAge"=>500
 		));
@@ -137,7 +138,7 @@ class TestCORS extends TestBase {
 		$this->assertEquals('Content-Type, Php-Platform-Session-Cookie, Accept',$response->getHeader('Access-Control-Allow-Headers'));
 		$this->assertEquals('true',$response->getHeader('Access-Control-Allow-Credentials'));
 		$this->assertEquals('500',$response->getHeader('Access-Control-Max-Age'));
-		
+		$this->assertEquals('Customer-Headers-For-CORS, location',$response->getHeader('Access-Control-Expose-Headers'));
 				
 	}
 	
