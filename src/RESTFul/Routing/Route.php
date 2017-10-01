@@ -13,6 +13,7 @@ use PhpPlatform\RESTFul\Package;
 use PhpPlatform\Annotations\Annotation;
 use PhpPlatform\Errors\Exceptions\Http\_4XX\Unauthorized;
 use PhpPlatform\Errors\Exceptions\Persistence\NoAccessException;
+use PhpPlatform\Errors\Exceptions\Persistence\DataNotFoundException;
 
 class Route {
 	
@@ -86,7 +87,11 @@ class Route {
 				$message = "Internal Server Error";
 			}
 			$httpResponse = new HTTPResponse($h->getCode(),$message);
+		}catch (DataNotFoundException $e){ // DataNotFoundException becomes 'Not Found' response
+			new NotFound(); // for logging purpose
+			$httpResponse = new HTTPResponse(404,'Not Found');
 		}catch (NoAccessException $e){ // NoAccessException becomes Unauthorized response 
+			new Unauthorized(); // for logging purpose
 			$httpResponse = new HTTPResponse(401,'Unauthorized');
 		}catch (\Exception $e){
 			new InternalServerError($e->getMessage()); // for logging purposes
