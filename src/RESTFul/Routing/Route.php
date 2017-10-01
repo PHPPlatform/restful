@@ -12,6 +12,7 @@ use PhpPlatform\RESTFul\HTTPResponse;
 use PhpPlatform\RESTFul\Package;
 use PhpPlatform\Annotations\Annotation;
 use PhpPlatform\Errors\Exceptions\Http\_4XX\Unauthorized;
+use PhpPlatform\Errors\Exceptions\Persistence\NoAccessException;
 
 class Route {
 	
@@ -85,6 +86,8 @@ class Route {
 				$message = "Internal Server Error";
 			}
 			$httpResponse = new HTTPResponse($h->getCode(),$message);
+		}catch (NoAccessException $e){ // NoAccessException becomes Unauthorized response 
+			$httpResponse = new HTTPResponse(401,'Unauthorized');
 		}catch (\Exception $e){
 			new InternalServerError($e->getMessage()); // for logging purposes
 			$httpResponse = new HTTPResponse(500,'Internal Server Error');
