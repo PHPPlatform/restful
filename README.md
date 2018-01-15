@@ -1,4 +1,4 @@
-# PHP Platforms RESTFul Apis
+# PHP Platform's RESTFul Apis
 This packages provides platform for writing RESTFul APIs in PHP 
 
 [![build status](https://gitlab.com/php-platform/restful/badges/master/build.svg)](https://gitlab.com/php-platform/restful/commits/master) [![coverage report](https://gitlab.com/php-platform/restful/badges/master/coverage.svg)](https://gitlab.com/php-platform/restful/commits/master)
@@ -30,9 +30,10 @@ This package provides a platform for creating such RESTFul APIs in PHP
 #### @Path
 Can be applied on service class or method , this denotes url path to reach that service-method
 
-#### @GET @POST @PUT @HEAD @DELETE
+#### @GET @POST @PUT @PATCH @HEAD @DELETE
 Can be applied only on service method , denotes what http verb this method is capable of serving.
 A service method can have more than on of these Annotations
+If a service method has `@Path` annotation and has no HTTP methods , `@GET` is applied by default
 
 #### @Consumes
 Cab be applied only on service method, specifies the data type of the request body

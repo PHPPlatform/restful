@@ -114,6 +114,34 @@ class TestRoute extends TestBase {
 		$this->assertEquals('{"param1":"myParam1","param2":"myParam2"}', $response->getBody(true));
 	}
 	
+	function testHttpMethods(){
+		$client = new Client();
+		$request = $client->get(APP_DOMAIN.'/'.APP_PATH.'/test/route/method');
+		$response = $client->send($request);
+		$this->assertEquals('GET', $response->getBody(true));
+		
+		$request = $client->post(APP_DOMAIN.'/'.APP_PATH.'/test/route/method');
+		$response = $client->send($request);
+		$this->assertEquals('POST', $response->getBody(true));
+		
+		$request = $client->put(APP_DOMAIN.'/'.APP_PATH.'/test/route/method');
+		$response = $client->send($request);
+		$this->assertEquals('PUT', $response->getBody(true));
+		
+		$request = $client->patch(APP_DOMAIN.'/'.APP_PATH.'/test/route/method');
+		$response = $client->send($request);
+		$this->assertEquals('PATCH', $response->getBody(true));
+		
+		$request = $client->delete(APP_DOMAIN.'/'.APP_PATH.'/test/route/method');
+		$response = $client->send($request);
+		$this->assertEquals('DELETE', $response->getBody(true));
+		
+		$request = $client->get(APP_DOMAIN.'/'.APP_PATH.'/test/route/method/default');
+		$response = $client->send($request);
+		$this->assertEquals('Default', $response->getBody(true));
+		
+	}
+	
 	function testResourceNotFound(){
 		$client = new Client();
 		$request = $client->get(APP_DOMAIN.'/'.APP_PATH.'/test/route/myParam1/path/myParam2/non-existant-resource');

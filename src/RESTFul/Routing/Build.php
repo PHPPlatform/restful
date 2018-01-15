@@ -99,6 +99,7 @@ class Build{
             $PUTVerbAnnotation = "PUT";
             $HEADVerbAnnotation = "HEAD";
             $DELETEVerbAnnotation = "DELETE";
+            $PATCHVerbAnnotation = "PATCH";
 
 
             $annotations = Annotation::getAnnotations($className);
@@ -121,6 +122,9 @@ class Build{
                 }
                 if(array_key_exists($PUTVerbAnnotation,$methodAnnotations)){
                     $methodHTTPVerbs[] = $PUTVerbAnnotation;
+                }
+                if(array_key_exists($PATCHVerbAnnotation,$methodAnnotations)){
+                	$methodHTTPVerbs[] = $PATCHVerbAnnotation;
                 }
                 if(array_key_exists($DELETEVerbAnnotation,$methodAnnotations)){
                     $methodHTTPVerbs[] = $DELETEVerbAnnotation;
