@@ -98,7 +98,7 @@ class HTTPResponse{
 			
 			// write data
 			$dataType = gettype($this->data);
-			if($dataType == "unknown type"){
+			if($dataType == "unknown type" || $dataType == 'resource (closed)'){
 				$this->exitWithError("Unkown type of data in HTTPResponse");
 			}
 			
