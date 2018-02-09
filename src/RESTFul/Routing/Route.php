@@ -14,6 +14,8 @@ use PhpPlatform\Annotations\Annotation;
 use PhpPlatform\Errors\Exceptions\Http\_4XX\Unauthorized;
 use PhpPlatform\Errors\Exceptions\Persistence\NoAccessException;
 use PhpPlatform\Errors\Exceptions\Persistence\DataNotFoundException;
+use PhpPlatform\Errors\Exceptions\Application\ProgrammingError;
+use PhpPlatform\Errors\Exceptions\PlatformException;
 
 class Route {
 	
@@ -48,7 +50,7 @@ class Route {
 			$RESTServiceInterfaceName = 'PhpPlatform\RESTFul\RESTService';
 			
 			if(!in_array($RESTServiceInterfaceName,class_implements($class,true))){
-				throw new InternalServerError("$class does not implement $RESTServiceInterfaceName");
+				throw new ProgrammingError("$class does not implement $RESTServiceInterfaceName");
 			}
 			
 			$serviceClassAnnotations = Annotation::getAnnotations($class,null,null,$method);
@@ -78,15 +80,15 @@ class Route {
 				// flush HTTPResponse
 				$httpResponse->flush($httpRequest->getHeader('Accept'));
 			}else{
-				throw new InternalServerError("Service method does not return instance of PhpPlatform\RESTFul\HTTPResponse");
+				throw new ProgrammingError("Service method does not return instance of PhpPlatform\RESTFul\HTTPResponse");
 			}
 			
 		}catch (HttpException $h){
-			$message = $h->getMessage();
+			$body = $h->getBody();
 			if($h instanceof InternalServerError){
-				$message = "Internal Server Error";
+				$body = null;
 			}
-			$httpResponse = new HTTPResponse($h->getCode(),$message);
+			$httpResponse = new HTTPResponse($h->getCode(),$h->getMessage(),$body);
 		}catch (DataNotFoundException $e){ // DataNotFoundException becomes 'Not Found' response
 			new NotFound(); // for logging purpose
 			$httpResponse = new HTTPResponse(404,'Not Found');
@@ -94,7 +96,9 @@ class Route {
 			new Unauthorized(); // for logging purpose
 			$httpResponse = new HTTPResponse(401,'Unauthorized');
 		}catch (\Exception $e){
-			new InternalServerError($e->getMessage()); // for logging purposes
+			if(!($e instanceof PlatformException)){
+				new ProgrammingError($e->getMessage()); // for logging purposes
+			}
 			$httpResponse = new HTTPResponse(500,'Internal Server Error');
 		}
 		self::addCorsHeaders($httpResponse, $corsAccessControl);
@@ -180,7 +184,7 @@ class Route {
 		if(!(array_key_exists("class", $route) &&
 				array_key_exists("method", $route) &&
 				method_exists($route["class"], $route["method"]))){
-					throw new InternalServerError("class and/or method does not exists for route at " . implode("/", $urlPaths));
+					throw new ProgrammingError("class and/or method does not exists for route at " . implode("/", $urlPaths));
 		}
 		$route["pathParams"] = $pathParams;
 		$route["corsAccessControl"] = $corsAccessControl;

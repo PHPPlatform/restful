@@ -152,11 +152,11 @@ class TestRoute extends TestBase {
 		}catch (ClientErrorResponseException $e){
 			$response = $e->getResponse();
 			$this->assertEquals(404, $response->getStatusCode());
-			$this->assertEquals('Resource at test/route/myParam1/path/myParam2/non-existant-resource Not Found', $response->getReasonPhrase());
-			$this->assertEquals('', $response->getBody(true));
+			$this->assertEquals('Not Found', $response->getReasonPhrase());
+			$this->assertEquals('Resource at test/route/myParam1/path/myParam2/non-existant-resource Not Found', $response->getBody(true));
 			
 			// validate log
-			$this->assertContainsAndClearLog('Resource at test/route/myParam1/path/myParam2/non-existant-resource Not Found');
+			$this->assertContainsAndClearLog('[H][404][::1][/test/route/myParam1/path/myParam2/non-existant-resource] Not Found');
 			
 			$isException = true;
 		}
@@ -175,11 +175,11 @@ class TestRoute extends TestBase {
 		}catch (ClientErrorResponseException $e){
 			$response = $e->getResponse();
 			$this->assertEquals(404, $response->getStatusCode());
-			$this->assertEquals('Resource at test Not Found', $response->getReasonPhrase());
-			$this->assertEquals('', $response->getBody(true));
+			$this->assertEquals('Not Found', $response->getReasonPhrase());
+			$this->assertEquals('Resource at test Not Found', $response->getBody(true));
 			
 			// validate log
-			$this->assertContainsAndClearLog('Resource at test Not Found');
+			$this->assertContainsAndClearLog('[H][404][::1][/test] Not Found');
 			
 			$isException = true;
 		}
@@ -198,11 +198,11 @@ class TestRoute extends TestBase {
 		}catch (ClientErrorResponseException $e){
 			$response = $e->getResponse();
 			$this->assertEquals(405, $response->getStatusCode());
-			$this->assertEquals('POST method is not Allowed', $response->getReasonPhrase());
-			$this->assertEquals('', $response->getBody(true));
+			$this->assertEquals('Method Not Allowed', $response->getReasonPhrase());
+			$this->assertEquals('POST method is not Allowed', $response->getBody(true));
 			
 			// validate log
-			$this->assertContainsAndClearLog('POST method is not Allowed');
+			$this->assertContainsAndClearLog('[H][405][::1][/test/route/json] Method Not Allowed');
 			
 			$isException = true;
 		}

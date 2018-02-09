@@ -62,7 +62,8 @@ class TestCORS extends TestBase {
 			$this->clearErrorLog();
 		}
 		$this->assertEquals(401, $response->getStatusCode());
-		$this->assertEquals("CORS ERROR : http://mydomain.com is not a allowed origin", $response->getReasonPhrase());
+		$this->assertEquals('Unauthorized', $response->getReasonPhrase());
+		$this->assertEquals("CORS ERROR : http://mydomain.com is not a allowed origin", $response->getBody(true));
 		
 		$this->assertNull($response->getHeader('Access-Control-Allow-Origin'));
 		$this->assertNull($response->getHeader('Access-Control-Allow-Methods'));
