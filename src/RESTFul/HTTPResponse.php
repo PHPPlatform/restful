@@ -3,7 +3,6 @@ namespace PhpPlatform\RESTFul;
 
 use PhpPlatform\Errors\Exceptions\Application\BadInputException;
 use PhpPlatform\Config\Settings;
-use PhpPlatform\Errors\Exceptions\Http\_5XX\InternalServerError;
 use phpDocumentor\Reflection\DocBlock\Serializer;
 use PhpPlatform\Errors\Exceptions\Application\ProgrammingError;
 
