@@ -8,6 +8,9 @@ use PhpPlatform\Mock\Config\MockSettings;
 use PhpPlatform\RESTFul\Package;
 use Guzzle\Http\Exception\BadResponseException;
 
+/**
+ * @todo test service-specific CORS settings
+ */
 class TestCORS extends TestBase {
 	
 	function testForNoCORSHeadersForSameOrigin(){
