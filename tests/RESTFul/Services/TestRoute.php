@@ -6,6 +6,9 @@ use PhpPlatform\RESTFul\RESTService;
 use PhpPlatform\RESTFul\HTTPResponse;
 use PhpPlatform\Errors\Exceptions\Application\BadInputException;
 use PhpPlatform\RESTFul\HTTPRequest;
+use PhpPlatform\Errors\Exceptions\Http\_5XX\InternalServerError;
+use PhpPlatform\Errors\Exceptions\Persistence\DataNotFoundException;
+use PhpPlatform\Errors\Exceptions\Persistence\NoAccessException;
 
 /**
  * @Path "/test/route"
@@ -46,11 +49,45 @@ class TestRoute implements RESTService{
 	}
 	
 	/**
+	 * @Path "/exception/platform-exception"
+	 * @GET
+	 */
+	function platformException(){
+		throw new BadInputException("Testing Uncaught Bad Input Exception in Service");
+	}
+	
+	/**
+	 * @Path "/exception/internal-server-error"
+	 * @GET
+	 */
+	function internalServerError(){
+		throw new InternalServerError("Testing Uncaught internalServerError in Service");
+	}
+	
+	/**
+	 * @Path "/exception/data-not-found-exception"
+	 * @GET
+	 */
+	function dataNotFoundException(){
+		throw new DataNotFoundException();
+	}
+	
+	
+	/**
+	 * @Path "/exception/no-access-exception"
+	 * @GET
+	 */
+	function noAccessException(){
+		throw new NoAccessException();
+	}
+	
+	
+	/**
 	 * @Path "/exception"
 	 * @GET
 	 */
 	function exception(){
-		throw new BadInputException("Testing Uncaught Bad Input Exception in Service");
+		throw new \Exception("Testing Exception in Service Method");
 	}
 	
 	/**
@@ -119,4 +156,5 @@ class TestRoute implements RESTService{
 	function testHTTPMethodDefault($request){
 		return new HTTPResponse(200,'OK',"Default");
 	}
+
 }

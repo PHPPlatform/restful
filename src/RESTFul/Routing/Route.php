@@ -86,6 +86,7 @@ class Route {
 		}catch (HttpException $h){
 			$body = $h->getBody();
 			if($h instanceof InternalServerError){
+				new ProgrammingError($body); // for logging purpose
 				$body = null;
 			}
 			$httpResponse = new HTTPResponse($h->getCode(),$h->getMessage(),$body);
