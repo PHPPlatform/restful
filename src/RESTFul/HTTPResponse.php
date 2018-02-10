@@ -3,8 +3,8 @@ namespace PhpPlatform\RESTFul;
 
 use PhpPlatform\Errors\Exceptions\Application\BadInputException;
 use PhpPlatform\Config\Settings;
-use PhpPlatform\Errors\Exceptions\Http\_5XX\InternalServerError;
 use phpDocumentor\Reflection\DocBlock\Serializer;
+use PhpPlatform\Errors\Exceptions\Application\ProgrammingError;
 
 class HTTPResponse{
 	
@@ -98,7 +98,7 @@ class HTTPResponse{
 			
 			// write data
 			$dataType = gettype($this->data);
-			if($dataType == "unknown type"){
+			if($dataType == "unknown type" || $dataType == 'resource (closed)'){
 				$this->exitWithError("Unkown type of data in HTTPResponse");
 			}
 			
@@ -158,7 +158,7 @@ class HTTPResponse{
 	 */
 	private function exitWithError($message){
 		header($_SERVER['SERVER_PROTOCOL']." 500 Internal Server Error");
-		new InternalServerError($message); // for logging purpose a new InternalServerError exception is created, but not thrown
+		new ProgrammingError($message); // for logging purpose a new ProgrammingError exception is created, but not thrown
 		// clear buffer , if any
 		if(ob_get_length() !== false){
 			ob_clean();

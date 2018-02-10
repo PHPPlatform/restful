@@ -95,7 +95,91 @@ class TestRoute extends TestBase {
 			$this->assertEquals("", $response->getBody(true));
 			
 			// validate log
+			$this->assertContainsAndClearLog('Testing Exception in Service Method');
+			
+			$isException = true;
+		}
+		$this->assertTrue($isException);
+	}
+	
+	function testPlatformExceptionFromServiceMethod(){
+		$client = new Client();
+		$request = $client->get(APP_DOMAIN.'/'.APP_PATH.'/test/route/exception/platform-exception');
+		
+		$isException = false;
+		try{
+			$client->send($request);
+		}catch (ServerErrorResponseException $e){
+			$response = $e->getResponse();
+			$this->assertEquals(500, $response->getStatusCode());
+			$this->assertEquals("Internal Server Error", $response->getReasonPhrase());
+			$this->assertEquals("", $response->getBody(true));
+			
+			// validate log
 			$this->assertContainsAndClearLog('Testing Uncaught Bad Input Exception in Service');
+			
+			$isException = true;
+		}
+		$this->assertTrue($isException);
+	}
+	
+	function testInternalServerErrorFromServiceMethod(){
+		$client = new Client();
+		$request = $client->get(APP_DOMAIN.'/'.APP_PATH.'/test/route/exception/internal-server-error');
+		
+		$isException = false;
+		try{
+			$client->send($request);
+		}catch (ServerErrorResponseException $e){
+			$response = $e->getResponse();
+			$this->assertEquals(500, $response->getStatusCode());
+			$this->assertEquals("Internal Server Error", $response->getReasonPhrase());
+			$this->assertEquals("", $response->getBody(true));
+			
+			// validate log
+			$this->assertContainsAndClearLog('Testing Uncaught internalServerError in Service');
+			
+			$isException = true;
+		}
+		$this->assertTrue($isException);
+	}
+	
+	function testDataNotFoundExceptionFromServiceMethod(){
+		$client = new Client();
+		$request = $client->get(APP_DOMAIN.'/'.APP_PATH.'/test/route/exception/data-not-found-exception');
+		
+		$isException = false;
+		try{
+			$client->send($request);
+		}catch (ClientErrorResponseException $e){
+			$response = $e->getResponse();
+			$this->assertEquals(404, $response->getStatusCode());
+			$this->assertEquals("Not Found", $response->getReasonPhrase());
+			$this->assertEquals("", $response->getBody(true));
+			
+			// validate log
+			$this->assertContainsAndClearLog('[H][404][::1][/test/route/exception/data-not-found-exception] Not Found');
+			
+			$isException = true;
+		}
+		$this->assertTrue($isException);
+	}
+	
+	function testNoAccessExceptionFromServiceMethod(){
+		$client = new Client();
+		$request = $client->get(APP_DOMAIN.'/'.APP_PATH.'/test/route/exception/no-access-exception');
+		
+		$isException = false;
+		try{
+			$client->send($request);
+		}catch (ClientErrorResponseException $e){
+			$response = $e->getResponse();
+			$this->assertEquals(401, $response->getStatusCode());
+			$this->assertEquals("Unauthorized", $response->getReasonPhrase());
+			$this->assertEquals("", $response->getBody(true));
+			
+			// validate log
+			$this->assertContainsAndClearLog('[H][401][::1][/test/route/exception/no-access-exception] Unauthorized');
 			
 			$isException = true;
 		}
@@ -152,11 +236,11 @@ class TestRoute extends TestBase {
 		}catch (ClientErrorResponseException $e){
 			$response = $e->getResponse();
 			$this->assertEquals(404, $response->getStatusCode());
-			$this->assertEquals('Resource at test/route/myParam1/path/myParam2/non-existant-resource Not Found', $response->getReasonPhrase());
-			$this->assertEquals('', $response->getBody(true));
+			$this->assertEquals('Not Found', $response->getReasonPhrase());
+			$this->assertEquals('Resource at test/route/myParam1/path/myParam2/non-existant-resource Not Found', $response->getBody(true));
 			
 			// validate log
-			$this->assertContainsAndClearLog('Resource at test/route/myParam1/path/myParam2/non-existant-resource Not Found');
+			$this->assertContainsAndClearLog('[H][404][::1][/test/route/myParam1/path/myParam2/non-existant-resource] Not Found');
 			
 			$isException = true;
 		}
@@ -175,11 +259,11 @@ class TestRoute extends TestBase {
 		}catch (ClientErrorResponseException $e){
 			$response = $e->getResponse();
 			$this->assertEquals(404, $response->getStatusCode());
-			$this->assertEquals('Resource at test Not Found', $response->getReasonPhrase());
-			$this->assertEquals('', $response->getBody(true));
+			$this->assertEquals('Not Found', $response->getReasonPhrase());
+			$this->assertEquals('Resource at test Not Found', $response->getBody(true));
 			
 			// validate log
-			$this->assertContainsAndClearLog('Resource at test Not Found');
+			$this->assertContainsAndClearLog('[H][404][::1][/test] Not Found');
 			
 			$isException = true;
 		}
@@ -198,11 +282,11 @@ class TestRoute extends TestBase {
 		}catch (ClientErrorResponseException $e){
 			$response = $e->getResponse();
 			$this->assertEquals(405, $response->getStatusCode());
-			$this->assertEquals('POST method is not Allowed', $response->getReasonPhrase());
-			$this->assertEquals('', $response->getBody(true));
+			$this->assertEquals('Method Not Allowed', $response->getReasonPhrase());
+			$this->assertEquals('POST method is not Allowed', $response->getBody(true));
 			
 			// validate log
-			$this->assertContainsAndClearLog('POST method is not Allowed');
+			$this->assertContainsAndClearLog('[H][405][::1][/test/route/json] Method Not Allowed');
 			
 			$isException = true;
 		}
