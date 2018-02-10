@@ -19,7 +19,7 @@ abstract class TestBase extends \PHPUnit_Framework_TestCase {
 			$filter = new \PHP_CodeCoverage_Filter();
 			$filter->addDirectoryToWhitelist(dirname(__FILE__).'/../../src');
 			self::$coverage = new \PHP_CodeCoverage(null,$filter);
-			self::$coverage->start('testiCircleAccounts');
+			self::$coverage->start('testRESTful');
 		}
 		
 		// create a temporary error log directory
