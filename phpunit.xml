@@ -3,7 +3,7 @@
 <phpunit colors="true" bootstrap="tests/autoload.php" >
     <php>
         <const name="APP_DOMAIN" value="http://localhost"/>
-        <const name="APP_PATH" value="php-platform/restful"/>
+        <const name="APP_PATH" value="restful"/>
         <const name="APP_COVERAGE" value="true"/>
     </php>
     <testsuites>

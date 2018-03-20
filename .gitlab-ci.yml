@@ -1,5 +1,5 @@
 before_script:
-  - bash ci/docker_install.sh
+  - bash <(curl -s https://assets.icircle.xyz/gitlab-ci/v0.1.1/docker_install.sh)
 
 test_5.4:
   image : phpplatform/php-apache-xdebug-composer:5.4

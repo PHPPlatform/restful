@@ -52,8 +52,13 @@ class Build{
     		$config["routes"] = self::$routes;
     		$configJson = json_encode($config,JSON_PRETTY_PRINT|JSON_UNESCAPED_SLASHES);
     		file_put_contents($configFilePath, $configJson);
-    		SettingsCache::getInstance()->reset();
+    		self::refreshCache();
     	}
+    }
+    
+    private static function refreshCache(){
+        $settingsCache = SettingsCache::getInstance();
+        $settingsCache->setData(["php-platform"=>["restful"=>["routes"=>self::$routes]]]);
     }
 
     private static function processPSR4Dir($namespace,$path){
