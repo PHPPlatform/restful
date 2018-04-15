@@ -33,9 +33,9 @@ class Validation {
      */
     private $childValidations = [];
 	
-    function __construct($key, $data){
+    function __construct($key, &$data){
         $this->key = $key;
-        $this->data = $data;
+        $this->data = &$data;
     }
     
 	function containsOnly($keys){
@@ -67,6 +67,9 @@ class Validation {
 	}
 	
 	function key($key){
+	    if(!array_key_exists($key, $this->data)){
+	        $this->data[$key] = null;
+	    }
 	    $subValidation = new Validation($key,$this->data[$key]);
 	    $subValidation->continue = $this->continue;
 	    $subValidation->parentValidation = $this;
@@ -169,7 +172,7 @@ class Validation {
 	
 	function match($regExpr){
 	    if($this->continue){
-	        if(preg_match($regExpr,$this->data) === false){
+	        if(preg_match($regExpr,$this->data) !== 1){
 	            $this->validationErrors = 'invalid';
 	            $this->continue = false;
 	        }
