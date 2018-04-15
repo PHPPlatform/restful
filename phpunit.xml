@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<phpunit colors="true" bootstrap="tests/autoload.php" >
+<phpunit colors="true" bootstrap="vendor/php-platform/restful-unit/resources/autoload.php" >
     <php>
         <const name="APP_DOMAIN" value="http://localhost"/>
         <const name="APP_PATH" value="restful"/>

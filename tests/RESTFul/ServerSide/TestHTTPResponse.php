@@ -4,8 +4,9 @@ namespace PhpPlatform\Tests\RESTFul\ServerSide;
 
 use PhpPlatform\RESTFul\HTTPResponse;
 use PhpPlatform\Errors\Exceptions\Application\BadInputException;
+use PhpPlatform\Tests\RESTFul\TestBase;
 
-class TestHTTPResponse extends TestServerSide{
+class TestHTTPResponse extends TestBase{
 	
 	function testConstruct(){
 		$isException = false;

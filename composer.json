@@ -27,6 +27,7 @@
 	},
 	"require-dev" : {
 		"phpunit/phpunit" : "~4.8",
+		"php-platform/restful-unit" : "~0.1",
 		"guzzlehttp/guzzle" : "~3.8",
 		"php-platform/mock-config" : "~0.1"
 	},
