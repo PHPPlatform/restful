@@ -1,11 +1,6 @@
 before_script:
   - bash <(curl -s https://assets.icircle.xyz/gitlab-ci/v0.1.1/docker_install.sh)
 
-test_5.4:
-  image : phpplatform/php-apache-xdebug-composer:5.4
-  script :
-    - ./vendor/bin/phpunit -c phpunit.xml
-
 test_5.5:
   image : phpplatform/php-apache-xdebug-composer:5.5
   script :
