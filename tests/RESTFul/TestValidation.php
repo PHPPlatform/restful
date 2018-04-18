@@ -229,7 +229,27 @@ class TestValidation extends TestCase{
                 },
                 ['a'=>'invalid']
             ],
-                
+            'ifPresent if present and valid'=>[
+                ['a'=>'Raghavendragmail.com','b'=>true,'c'=>'z'],
+                function($validation){
+                    $validation->key('a')->ifPresent()->isString()->hasLength(1,100);
+                },
+                []
+            ],
+            'ifPresent if present and invalid'=>[
+                ['a'=>'Raghavendragmail.com','b'=>true,'c'=>'z'],
+                function($validation){
+                    $validation->key('a')->ifPresent()->isString()->hasLength(1,10);
+                },
+                ['a'=>'invalid']
+            ],
+            'ifPresent if not present'=>[
+                ['b'=>true,'c'=>'z'],
+                function($validation){
+                    $validation->key('a')->ifPresent()->isString()->hasLength(1,100);
+                },
+                []
+            ],
         ];
     }
     

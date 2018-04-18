@@ -87,6 +87,16 @@ class Validation {
 	    return $this;
 	}
 	
+	function ifPresent(){
+	    if($this->continue){
+	        if(!isset($this->data)){
+	            $this->continue = false;
+	            unset($this->parentValidation->data[$this->key]);
+	        }
+	    }
+	    return $this;
+	}
+	
 	function defaultValue($value){
 	    if($this->continue){
 	        if(!isset($this->data)){
@@ -128,6 +138,7 @@ class Validation {
 	            $this->continue = false;
 	        }
 	    }
+	    return $this;
 	}
 	
 	function isTimestamp(){
