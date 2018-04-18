@@ -20,13 +20,14 @@
 		"bin/build-restful"
 	],
 	"require" : {
-		"php" : ">=5.4",
+		"php" : ">=5.5",
 		"php-platform/config" : "~0.1",
 		"php-platform/session" : "~0.1",
 		"php-platform/annotations" : "~0.1"
 	},
 	"require-dev" : {
 		"phpunit/phpunit" : "~4.8",
+		"php-platform/restful-unit" : "~0.1",
 		"guzzlehttp/guzzle" : "~3.8",
 		"php-platform/mock-config" : "~0.1"
 	},
@@ -40,5 +41,6 @@
 			"PhpPlatform\\Tests\\" : "tests/"
 		}
 	},
-	"minimum-stability" : "stable"
+	"minimum-stability" : "stable",
+	"license" : "Apache-2.0"
 }

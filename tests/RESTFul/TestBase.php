@@ -9,18 +9,9 @@ use PhpPlatform\RESTFul\Routing\Build;
 abstract class TestBase extends \PHPUnit_Framework_TestCase {
 	
 	private static $errorLogDir = null;
-	private static $coverage = null;
 	
 	static function setUpBeforeClass(){
 		parent::setUpBeforeClass();
-		
-		// generate coverage for tests run in php-cli process
-		if(defined('COVERAGE_DIR')){
-			$filter = new \PHP_CodeCoverage_Filter();
-			$filter->addDirectoryToWhitelist(dirname(__FILE__).'/../../src');
-			self::$coverage = new \PHP_CodeCoverage(null,$filter);
-			self::$coverage->start('testRESTful');
-		}
 		
 		// create a temporary error log directory
 		$errorLogDir = sys_get_temp_dir().'/php-platform/restful/errors/'.microtime(true);
@@ -53,13 +44,15 @@ abstract class TestBase extends \PHPUnit_Framework_TestCase {
 	}
 	
 	function tearDown(){
-		// display error log if any
-		$errorlogFile = self::$errorLogDir.'/'. $this->getName();
-		if(file_exists($errorlogFile)){
-			echo PHP_EOL.file_get_contents($errorlogFile).PHP_EOL;
-			unlink($errorlogFile);
-		}
-	}
+	    parent::tearDown();
+		// display error log if any on error
+	    $errorlogFile = self::$errorLogDir.'/'. md5($this->getName());
+	    if(file_exists($errorlogFile)){
+	        if($this->hasFailed()){
+	            echo PHP_EOL.file_get_contents($errorlogFile).PHP_EOL;
+	        }
+	        unlink($errorlogFile);
+	    }}
 	
 	function clearErrorLog(){
 		$errorlogFile = self::$errorLogDir.'/'. $this->getName();
@@ -81,13 +74,6 @@ abstract class TestBase extends \PHPUnit_Framework_TestCase {
 	static function tearDownAfterClass(){
 		// delete error log directory
 		rmdir(self::$errorLogDir);
-		
-		if(defined('COVERAGE_DIR')){
-			self::$coverage->stop();
-			$writer = new \PHP_CodeCoverage_Report_PHP();
-			$coverageFileName = md5(microtime()).'.php';
-			$writer->process(self::$coverage, COVERAGE_DIR.'/'.$coverageFileName);
-		}
 	}
 	
 }
