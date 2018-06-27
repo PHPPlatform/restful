@@ -32,7 +32,7 @@ abstract class TestBase extends \PHPUnit_Framework_TestCase {
 	}
 	
 	function setUp(){
-		$errorlogFile = self::$errorLogDir.'/'. $this->getName();
+		$errorlogFile = self::$errorLogDir.'/'. md5($this->getName());
 		
 		// create an temporary error log
 		MockSettings::setSettings('php-platform/errors', 'traces', array(
@@ -55,14 +55,14 @@ abstract class TestBase extends \PHPUnit_Framework_TestCase {
 	    }}
 	
 	function clearErrorLog(){
-		$errorlogFile = self::$errorLogDir.'/'. $this->getName();
+		$errorlogFile = self::$errorLogDir.'/'. md5($this->getName());
 		if(file_exists($errorlogFile)){
 			unlink($errorlogFile);
 		}
 	}
 	
 	function assertContainsAndClearLog($message){
-		$errorlogFile= self::$errorLogDir.'/'. $this->getName();
+		$errorlogFile= self::$errorLogDir.'/'. md5($this->getName());
 		$log = "";
 		if(file_exists($errorlogFile)){
 			$log = file_get_contents($errorlogFile);

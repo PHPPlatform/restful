@@ -47,6 +47,11 @@ Considered when `recaptcha.enable` configuration is set to `true`
 `` NOTE : ``
 service request should send the recaptcha response as http header **Php-Platform-Recaptcha-Response**
 
+#### @CORS.force
+Can be applied on service class or method
+Forces Origin Header to be present in Request
+This Annotation forces CORS on a service, see `CORS` section of this document for more information
+
 ## Configuration
 
 This section explains the configuration for this package which can be configured using config.xml
@@ -181,6 +186,16 @@ CORS configurations enables CORS (Cross Origin Resource Sharing) authentication
 ```
 
 Details of these can be found in [https://developer.mozilla.org/en-US/docs/Web/HTTP/Access_control_CORS](https://developer.mozilla.org/en-US/docs/Web/HTTP/Access_control_CORS)
+
+CORS configurations can be set specific for a Service using Annotations. 
+For example to allow a `https://specific.example.com` to a specific service 
+```PHP
+/**
+ * ...
+ * @CORS.AllowOrigins https://specific.example.com
+ */
+function mySpecificService(){} 
+```
 
 ##### Access-Control-* Headers 
 

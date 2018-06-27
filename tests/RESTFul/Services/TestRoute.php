@@ -156,5 +156,23 @@ class TestRoute implements RESTService{
 	function testHTTPMethodDefault($request){
 		return new HTTPResponse(200,'OK',"Default");
 	}
+	
+	/**
+	 * @Path "/cors/specific"
+	 * 
+	 * @CORS.AllowOrigins ("https://specific.example.com")
+	 */
+	function testCORSSpecificForThisService(){
+	    return new HTTPResponse(200,'OK',"testCORSSpecificForThisService");
+	}
+	
+	/**
+	 * @Path "/cors/force"
+	 *
+	 * @CORS.force
+	 */
+	function testCORSForce(){
+	    return new HTTPResponse(200,'OK',"testCORSSpecificForThisService");
+	}
 
 }
