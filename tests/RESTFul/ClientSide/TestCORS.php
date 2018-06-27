@@ -8,9 +8,6 @@ use PhpPlatform\Mock\Config\MockSettings;
 use PhpPlatform\RESTFul\Package;
 use Guzzle\Http\Exception\BadResponseException;
 
-/**
- * @todo test service-specific CORS settings
- */
 class TestCORS extends TestBase {
 	
 	function testForNoCORSHeadersForSameOrigin(){
@@ -146,5 +143,50 @@ class TestCORS extends TestBase {
 				
 	}
 	
+	
+	function testCORSSpecificForAService(){
+	    MockSettings::setSettings(Package::Name, 'CORS', array(
+	        "AllowOrigins"=>array('http://example.com'),
+	        "AllowMethods"=>array('GET'),
+	        "AllowHeaders"=>array(),
+	        "AllowCredentials"=>false,
+	        "MaxAge"=>1000
+	    ));
+	    
+	    $client = new Client();
+	    
+	    $request = $client->get(APP_DOMAIN.'/'.APP_PATH.'/test/route/cors/specific');
+	    $request->setHeader('Origin', "https://specific.example.com");
+	    $response = $client->send($request);
+	    
+	    $this->assertEquals('https://specific.example.com',$response->getHeader('Access-Control-Allow-Origin'));
+	    
+	}
+	
+	function testCORSForce(){
+	    MockSettings::setSettings(Package::Name, 'CORS', array(
+	        "AllowOrigins"=>array('http://example.com'),
+	        "AllowMethods"=>array('GET'),
+	        "AllowHeaders"=>array(),
+	        "AllowCredentials"=>false,
+	        "MaxAge"=>1000
+	    ));
+	    
+	    $client = new Client();
+	    
+	    // test forced cors
+	    $request = $client->get(APP_DOMAIN.'/'.APP_PATH.'/test/route/cors/force');
+	    try{
+	        $response = $client->send($request);
+	    }catch (BadResponseException $e){
+	        $response = $e->getResponse();
+	        $this->clearErrorLog();
+	    }
+	    
+	    $this->assertEquals(401, $response->getStatusCode());
+	    $this->assertEquals('Unauthorized', $response->getReasonPhrase());
+	    $this->assertEquals("CORS ERROR : Origin is expected", $response->getBody(true));
+	    
+	}
 	
 }

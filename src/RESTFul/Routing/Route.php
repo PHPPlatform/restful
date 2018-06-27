@@ -45,6 +45,8 @@ class Route {
 						throw new Unauthorized("CORS ERROR : $origin is not a allowed origin");
 					}
 				}
+			}else if($corsAccessControl['force'] == true){
+			    throw new Unauthorized("CORS ERROR : Origin is expected");
 			}
 			
 			$RESTServiceInterfaceName = 'PhpPlatform\RESTFul\RESTService';
@@ -219,8 +221,10 @@ class Route {
 		if(array_key_exists('MaxAge', $headers2)){
 			$headers1['MaxAge'] = $headers2['MaxAge'];
 		}
+		if(array_key_exists('force', $headers2)){
+		    $headers1['force'] = $headers2['force'];
+		}
 		return $headers1;
-		
 	}
 	
 	/**

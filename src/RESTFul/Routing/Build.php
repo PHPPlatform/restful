@@ -105,12 +105,17 @@ class Build{
             $HEADVerbAnnotation = "HEAD";
             $DELETEVerbAnnotation = "DELETE";
             $PATCHVerbAnnotation = "PATCH";
-
+            $CORSAnnotation = "CORS";
+            
 
             $annotations = Annotation::getAnnotations($className);
             $classUrlPath = "";
             if(array_key_exists($pathAnnotation,$annotations["class"])){
                 $classUrlPath = $annotations["class"][$pathAnnotation];
+            }
+            $classLevelCORS = [];
+            if(array_key_exists($CORSAnnotation, $annotations["class"])){
+                $classLevelCORS = $annotations["class"][$CORSAnnotation];
             }
             $classUrlPath = self::normalizeUrlPath($classUrlPath);
 
@@ -176,7 +181,13 @@ class Build{
                         $curRoute["methods"] = array();
                     }
                     $curRoute = &$curRoute["methods"];
-
+                    
+                    $methodLevelCORS = [];
+                    if(array_key_exists($CORSAnnotation, $methodAnnotations)){
+                        $methodLevelCORS = $methodAnnotations[$CORSAnnotation];
+                    }
+                    $serviceSpecificCORS = array_merge($classLevelCORS,$methodLevelCORS);
+                    
                     foreach($methodHTTPVerbs as $methodHTTPVerb){
                         if(array_key_exists($methodHTTPVerb,$curRoute)){
                             $existingClass = $curRoute[$methodHTTPVerb]["class"];
@@ -185,6 +196,9 @@ class Build{
                             if($existingClass.":".$existingMethod != $className.":".$methodName){
                                 if(is_a($className,$existingClass,true)){
                                     $curRoute[$methodHTTPVerb] = array("class"=>$className,"method"=>$methodName);
+                                    if(count($serviceSpecificCORS) > 0){
+                                        $curRoute[$methodHTTPVerb]['CORS'] = $serviceSpecificCORS;
+                                    }
                                 }else if(is_a($existingClass,$className,true)){
                                     // dont do anything
                                 }else{
@@ -193,6 +207,9 @@ class Build{
                             }
                         }else{
                             $curRoute[$methodHTTPVerb] = array("class"=>$className,"method"=>$methodName);
+                            if(count($serviceSpecificCORS) > 0){
+                                $curRoute[$methodHTTPVerb]['CORS'] = $serviceSpecificCORS;
+                            }
                         }
                     }
                 }
